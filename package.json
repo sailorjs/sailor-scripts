@@ -1,0 +1,29 @@
+{
+  "name": "sailor-scripts",
+  "description": "Scripts for Running Sailor",
+  "version": "0.0.0",
+  "author": {
+    "name": "Sailor",
+    "email": "",
+    "url": "https://github.com/sailorjs"
+  },
+  "dependencies": {
+    "fs-extra": "^0.9.1",
+    "lodash": "^2.4.1",
+    "sails": "^0.10.0-rc9",
+    "socket.io": "~0.9.14",
+    "socket.io-client": "~0.9.16",
+    "wrench": "^1.5.8"
+  },
+  "devDependencies": {},
+  "engines": {},
+  "homepage": "",
+  "keywords": [],
+  "license": "MIT",
+  "main": "",
+  "repository": "sailorjs/sailor-scripts",
+  "scripts": {
+    "test": "mocha -b",
+    "prepublish": "npm prune"
+  }
+}
