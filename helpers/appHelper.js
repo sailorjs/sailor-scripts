@@ -44,28 +44,13 @@ var _build = function(/* done */ ) {
   });
 };
 
-var _clean = function() {
-  var dir = process.cwd();
-  // appName = appName ? appName : 'testApp';
-  // var dir = path.resolve('./../', appName);
-  if (fs.existsSync(dir)) {
-    wrench.rmdirSyncRecursive(dir);
-  }
-};
-
-
-var _linkPlugin = function(callback){
-  var origin = path.resolve(process.cwd(), '..');
-  var dist = path.resolve(process.cwd(), 'node_modules', pkg.name);
-  fs.symlink(origin, dist, callback);
-};
-
-var _lift = function(options, callback) {
+var _lift = function(options, done) {
 
   delete process.env.NODE_ENV;
+  process.chdir(appName_path);
 
   if (typeof options == 'function') {
-    callback = options;
+    done = options;
     options = null;
   }
 
@@ -75,11 +60,26 @@ var _lift = function(options, callback) {
   });
 
   Sails().lift(options, function(err, sails) {
-    if (err) return callback(err);
-    sails.kill = sails.lower;
-    return callback(null, sails);
+    if (done){
+      if (err) return done(err);
+      sails.kill = sails.lower;
+      return done(null, sails);
+    }
   });
 
+};
+
+var _clean = function() {
+  if (fs.existsSync(appName_path)) {
+    wrench.rmdirSyncRecursive(appName_path);
+  }
+};
+
+
+var _linkPlugin = function(callback){
+  var origin = path.resolve(process.cwd(), '..');
+  var dist = path.resolve(process.cwd(), 'node_modules', pkg.name);
+  fs.symlink(origin, dist, callback);
 };
 
 var _buildAndLift = function(done){

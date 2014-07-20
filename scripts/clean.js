@@ -6,4 +6,4 @@ var appHelper = require('../helpers/appHelper');
 /**
  * Setup
  */
-appHelper.build();
+appHelper.clean();
