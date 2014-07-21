@@ -1,9 +1,9 @@
 /**
  * Module Dependencies
  */
-var appHelper = require('../helpers/appHelper');
+var scripts = require('../');
 
 /**
  * Setup
  */
-appHelper.build();
+scripts.build();
