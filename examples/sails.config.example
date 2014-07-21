@@ -14,7 +14,8 @@
 // moduleloader,logger,request,orm,views,blueprints,responses,controllers,sockets,pubsub,policies,services,csrf,cors,i18n,userconfig,session,grunt,http,userhooks
 
 
-{ blueprints:
+{
+  blueprints:
    { actions: true,
      rest: true,
      shortcuts: true,
@@ -151,4 +152,5 @@
      public: '/YOUR_PATH/testApp/.tmp/public' },
   middleware: {},
   ssl: {},
-  cache: { maxAge: 1 } }
+  cache: { maxAge: 1 }
+}
