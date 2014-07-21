@@ -1,9 +1,20 @@
 /**
  * Module Dependencies
  */
-var appHelper = require('../helpers/appHelper');
+var scripts = require('../');
 
 /**
  * Setup
  */
-appHelper.lift();
+
+var opts = {
+  port: 8000
+};
+
+// var callback = function(){};
+
+scripts.lift();
+// scripts.lift(opts);
+// scripts.lift(callback);
+// scripts.lift(opts, callback);
+
