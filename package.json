@@ -3,9 +3,9 @@
   "description": "Scripts for Running Sailor",
   "version": "0.1.0",
   "author": {
-    "name": "Sailor",
-    "email": "",
-    "url": "https://github.com/sailorjs"
+    "name": "Kiko Beats",
+    "email": "josefrancisco.verdu@gmail.com",
+    "url": "https://github.com/Kikobeats"
   },
   "dependencies": {
     "args-js": "^0.10.4",
@@ -16,7 +16,9 @@
     "socket.io-client": "~0.9.16",
     "wrench": "^1.5.8"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "should": "^4.0.4"
+  },
   "engines": {},
   "homepage": "",
   "keywords": [],
@@ -24,7 +26,7 @@
   "main": "",
   "repository": "sailorjs/sailor-scripts",
   "scripts": {
-    "test": "mocha -b",
+    "test": "sh test/test.sh",
     "prepublish": "npm prune"
   }
 }
