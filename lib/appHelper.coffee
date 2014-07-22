@@ -9,35 +9,39 @@ _ioClient = require("./sails.io")(require("socket.io-client"))
 Sails     = require("sails/lib/app")
 sailsLift = require("sails/bin/sails-lift")
 
+# -- PRIVATE ------------------------------------------------------------------
+
 appName      = "testApp"
 appName_path = path.join(__dirname, "../" + appName)
 
-change_path = (path) ->
+_change_path = (path) ->
   new_path = path or appName_path
   process.chdir new_path
 
 # Make existsSync not crash on older versions of Node
 fs.existsSync = fs.existsSync or path.existsSync
 
+# -- PUBLIC ------------------------------------------------------------------
+
 ###
 Create a new proyect using 'sails new' command
 @param  {[Function]} done Callback
 @return {[Function]}      Callback
 ###
-_build = (done) ->
+build = (done) ->
 
   # Cleanup old test fixtures
-  _clean()
+  clean()
   exec sailsBin + " new " + appName, (err) ->
     if done
       return done(err)  if err
       done()
 
-###*
- * @description Lift a Sails Server
- * @return      {[Functon]} Callback
 ###
-_lift = -> # dir, options, done
+@description Lift a Sails Server
+@return      {[Functon]} Callback
+###
+lift = -> # dir, options, done
   delete process.env.NODE_ENV
   args = Args([
     {dir:     Args.STRING   | Args.Optional, _default: appName_path}
@@ -48,7 +52,7 @@ _lift = -> # dir, options, done
   dir     = args.dir
   options = args.options
   done    = args.done
-  change_path dir
+  _change_path dir
 
   _.defaults options,
     # defaults options. Only can be overwritten
@@ -60,19 +64,19 @@ _lift = -> # dir, options, done
       sails.kill = sails.lower
       done null, sails
 
-###*
- * Concatenate build and lift actions
- * @param  {[type]}   options Sails option object
- * @param  {Function} done    Callback
- * @return {[type]}           Callback
 ###
-_buildAndLift = (options, done) ->
-  _build -> _lift options, done
+Concatenate build and lift actions
+@param  {[type]}   options Sails option object
+@param  {Function} done    Callback
+@return {[type]}           Callback
+###
+buildAndLift = (options, done) ->
+  build -> lift options, done
 
-###*
- * Clean a proyect
 ###
-_clean = -> # dir
+Clean a proyect
+###
+clean = -> # dir
   args = Args([
     {dir:     Args.STRING   | Args.Optional, _default: appName_path}
   ], arguments)
@@ -80,17 +84,17 @@ _clean = -> # dir
   dir     = args.dir
   wrench.rmdirSyncRecursive dir  if fs.existsSync(dir)
 
-
 # var _linkPlugin = function(callback){
 #   var origin = path.resolve(process.cwd(), '..');
 #   var dist = path.resolve(process.cwd(), 'node_modules', pkg.name);
 #   fs.symlink(origin, dist, callback);
 # };
-_liftWithTwoSockets = (options, callback) ->
+
+liftWithTwoSockets = (options, callback) ->
   if typeof options is "function"
     callback = options
     options = null
-  _lift options, (err, sails) ->
+  lift options, (err, sails) ->
     return callback(err)  if err
     socket1 = _ioClient.connect("http://localhost:1342",
       "force new connection": true
@@ -102,22 +106,20 @@ _liftWithTwoSockets = (options, callback) ->
       socket2.on "connect", ->
         callback null, sails, socket1, socket2
 
-_buildAndLiftWithTwoSockets = (appName, options, callback) ->
+buildAndLiftWithTwoSockets = (appName, options, callback) ->
   if typeof options is "function"
     callback = options
     options = null
-  _build appName, ->
-    _liftWithTwoSockets options, callback
+  build appName, ->
+    liftWithTwoSockets options, callback
 
+# -- EXPORTS ------------------------------------------------------------------
 
-# Exports
 module.exports =
-  build: _build
-  clean: _clean
-
+  build        : build
+  clean        : clean
+  lift         : lift
+  buildAndLift : buildAndLift
   # linkPlugin                 : _linkPlugin,
-  lift: _lift
-  buildAndLift: _buildAndLift
-
-# liftWithTwoSockets         : _liftWithTwoSockets,
-# buildAndLiftWithTwoSockets : _buildAndLiftWithTwoSockets
+  # liftWithTwoSockets         : liftWithTwoSockets,
+  # buildAndLiftWithTwoSockets : buildAndLiftWithTwoSockets
