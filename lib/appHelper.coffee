@@ -20,18 +20,9 @@ change_path = (path) ->
 fs.existsSync = fs.existsSync or path.existsSync
 
 ###
-Uses the Sails binary to create a namespaced test app
-If no appName is given use 'testApp'
-
-It copies all the files in the fixtures folder into their
-respective place in the test app so you don't need to worry
-about setting up the fixtures.
-###
-
-###
 Create a new proyect using 'sails new' command
-@param  {Function} done [Optional Callback]
-@return {[type]}        [callback Function]
+@param  {[Function]} done Callback
+@return {[Function]}      Callback
 ###
 _build = (done) ->
 
@@ -42,9 +33,12 @@ _build = (done) ->
       return done(err)  if err
       done()
 
+###*
+ * @description Lift a Sails Server
+ * @return      {[Functon]} Callback
+###
 _lift = -> # dir, options, done
   delete process.env.NODE_ENV
-
   args = Args([
     {dir:     Args.STRING   | Args.Optional, _default: appName_path}
     {options: Args.OBJECT   | Args.Optional, _default: {}}
@@ -66,11 +60,25 @@ _lift = -> # dir, options, done
       sails.kill = sails.lower
       done null, sails
 
+###*
+ * Concatenate build and lift actions
+ * @param  {[type]}   options Sails option object
+ * @param  {Function} done    Callback
+ * @return {[type]}           Callback
+###
 _buildAndLift = (options, done) ->
   _build -> _lift options, done
 
-_clean = ->
-  wrench.rmdirSyncRecursive appName_path  if fs.existsSync(appName_path)
+###*
+ * Clean a proyect
+###
+_clean = -> # dir
+  args = Args([
+    {dir:     Args.STRING   | Args.Optional, _default: appName_path}
+  ], arguments)
+
+  dir     = args.dir
+  wrench.rmdirSyncRecursive dir  if fs.existsSync(dir)
 
 
 # var _linkPlugin = function(callback){

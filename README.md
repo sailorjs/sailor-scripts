@@ -28,7 +28,7 @@ Delete `testApp`
 
 Create a `testApp` folder. By default, if `testApp` exist first delete it and later generate a new proyect.
 
-#### .lift([options], [callback])
+#### .lift([path], [options], [callback])
 
 Running a Sails server from `testApp` folder.
 
