@@ -72,8 +72,6 @@ class AppHelper
     @build dir, =>
       @lift dir, options, done
 
-
-
 # -- EXPORTS -----------------------------------------------------------------
 
 exports = module.exports = AppHelper
