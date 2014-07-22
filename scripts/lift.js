@@ -13,8 +13,8 @@ var opts = {
 
 // var callback = function(){};
 
-scripts.lift();
-// scripts.lift(opts);
+// scripts.lift();
+scripts.lift(opts);
 // scripts.lift(callback);
 // scripts.lift(opts, callback);
 

@@ -8,6 +8,7 @@
     "url": "https://github.com/sailorjs"
   },
   "dependencies": {
+    "args-js": "^0.10.4",
     "fs-extra": "^0.9.1",
     "lodash": "^2.4.1",
     "sails": "^0.10.0-rc9",
