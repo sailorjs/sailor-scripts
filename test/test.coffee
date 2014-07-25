@@ -2,22 +2,44 @@ fs        = require 'fs-extra'
 should    = require 'should'
 scripts   = require '../'
 
-DEFAULT_NAME = 'testApp'
+DIR    = process.cwd()
+APP    = 'testApp'
+MODULE = "sailor-module-test"
 
-describe 'Created a new Base Proyect', ->
+# after (done) ->
+#   scripts.clean "#{DIR}/#{APP}"
+#   scripts.clean "#{DIR}/#{MODULE}", done
 
-  it 'create and copy the files of the proyect', ->
-    scripts.newBase(->
-      fs.existsSync("#{process.cwd()}/#{DEFAULT_NAME}").should.eql true
-    )
+describe 'Base', ->
+
+  it 'created a new based proyect without name', ->
+    scripts.newBase ->
+      fs.existsSync("#{DIR}/#{APP}").should.eql true
+
+  it "created a new based proyect called 'testApp'", ->
+    scripts.newBase "testApp", ->
+      fs.existsSync("#{DIR}/#{APP}").should.eql true
+
+describe 'Module', ->
+
+  it 'created a new module for a base proyect', ->
+   scripts.newModule "#{MODULE}", "#{DIR}", ->
+    fs.existsSync("#{DIR}/#{MODULE}").should.eql true
+
+describe 'Link', ->
+
+  it 'module in base proyect without error', ->
+    scripts.link "#{DIR}/#{MODULE}", "#{DIR}/#{APP}/node_modules/#{MODULE}", ->
+      fs.existsSync("#{DIR}/#{APP}/node_modules/#{MODULE}").should.eql true
+
+describe 'Lift', ->
+  it 'starts sails server', (done) ->
+    opts =
+      plugins: [MODULE]
+    scripts.lift "#{DIR}/#{APP}", opts, done
 
 
-  # it 'without errors',  ->
-    # scripts.newBase
-    # fs.existsSync("#{process.cwd()}/testApp").should.eql true
-
-
-xdescribe 'Build and Lift a proyect', ->
+describe 'Build and Lift a proyect', ->
   it 'without errors', (done) ->
     opts = log: level: 'silent'
     scripts.buildAndLift opts, done
