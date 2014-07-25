@@ -17,6 +17,8 @@ sailsLift = require("sails/bin/sails-lift")
 
 DEFAULT_NAME = 'testApp'
 DEFAULT_PATH = path.join(__dirname, '../' + DEFAULT_NAME)
+BASE_PATH    = path.join(__dirname, '../template/base')
+MODULE_PATH  = path.join(__dirname, '../template/module')
 CHANGE_PATH  = (dir) ->
   args = Args([
     {dir: Args.STRING | Args.Optional, _default: DEFAULT_PATH}
@@ -28,6 +30,18 @@ class AppHelper
 
   # -- STATIC ------------------------------------------------------------------
 
+  @newBase: (done)->
+    args = Args([
+      {dir:     Args.STRING   | Args.Optional, _default: "#{process.cwd()}/#{DEFAULT_NAME}"}
+      {done:    Args.FUNCTION | Args.Optional, _default: undefined}
+    ], arguments)
+
+    wrench.copyDirSyncRecursive BASE_PATH, args.dir,
+      forceDelete: true
+
+    done() if done?
+
+
   @clean: (dir) ->
     args = Args([
       {dir: Args.STRING | Args.Optional, _default: DEFAULT_PATH}
@@ -38,11 +52,16 @@ class AppHelper
 
 
   @build: (dir, done) ->
-    @clean(dir)
+    args = Args([
+      {dir:     Args.STRING   | Args.Optional, _default: DEFAULT_NAME}
+      {done:    Args.FUNCTION | Args.Optional, _default: undefined}
+    ], arguments)
+
+    @clean(args.dir)
     exec sailsBin + " new " + DEFAULT_NAME, (err) ->
-      if done?
-        return done(err)  if err
-        done()
+      if args.done?
+        return args.done(err)  if err
+        args.done()
 
 
 
