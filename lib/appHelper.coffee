@@ -48,7 +48,9 @@ class AppHelper
     ], arguments)
 
     sh.run(args.cmd)
-    args.done() if args.done?
+    args.done?()
+
+
 
   ###*
    * Create a symbolic link
@@ -63,8 +65,8 @@ class AppHelper
       {done: Args.FUNCTION | Args.Optional, _default: undefined}
     ], arguments)
 
-    fs.symlink args.orig, args.dist, -> args.done?()
-
+    fs.symlink args.orig, args.dist, ->
+      args.done?()
 
 
   ###*
@@ -84,8 +86,7 @@ class AppHelper
       forceDelete: true
 
     @execute("cd #{args.dir}/#{args.name} && npm install >/dev/null 2>/dev/null");
-
-    done?()
+    args.done?()
 
 
 
@@ -105,23 +106,32 @@ class AppHelper
     wrench.copyDirSyncRecursive TEMPLATE_MODULE, "#{args.dir}/#{args.name}",
       forceDelete: true
     @execute("cd #{args.dir}/#{args.name} && npm install >/dev/null 2>/dev/null");
-
-    done() if done?
-
+    args.done?()
 
 
+
+  ###*
+   * Clear a folder
+   * @param  {[type]}   dir  Optional directory
+   * @param  {Function} done Optional Callback
+  ###
   @clean: (dir, done) ->
     args = Args([
-      {dir: Args.STRING | Args.Optional, _default: DEFAULT_BASE_PATH}
+      {dir : Args.STRING   | Args.Optional, _default: "#{process.cwd()}/#{DEFAULT_BASE}"}
+      {done: Args.FUNCTION | Args.Optional, _default: undefined}
     ], arguments)
 
     wrench.rmdirSyncRecursive args.dir  if fs.existsSync(args.dir)
-
-    done?()
-
+    args.done?()
 
 
-  @build: (dir, done) ->
+
+  ###*
+   * Run Sails 'new' command
+   * @param  {[type]}   dir  Optional directory
+   * @param  {Function} done Optional Callback
+  ###
+  @sailsNew: (dir, done) ->
     args = Args([
       {dir:     Args.STRING   | Args.Optional, _default: DEFAULT_BASE}
       {done:    Args.FUNCTION | Args.Optional, _default: undefined}
@@ -134,7 +144,12 @@ class AppHelper
         args.done()
 
 
-
+  ###*
+   * Run Sails 'lift' command
+   * @param  {String}   dir     Optional directory
+   * @param  {Object}   options Optional sails config object
+   * @param  {Function} done    Optional Callback
+  ###
   @lift: (dir, options, done) ->
     delete process.env.NODE_ENV
     args = Args([
@@ -149,7 +164,6 @@ class AppHelper
       # defaults options. Only can be overwritten
       port: 1342
 
-    console.log args
     Sails().lift args.options, (err, sails) ->
       if args.done?
         return args.done(err)  if err
@@ -157,7 +171,12 @@ class AppHelper
         args.done null, sails
 
 
-
+  ###*
+   * Concatenate Sails 'new' and 'lift' command
+   * @param  {String}   dir     Optional directory
+   * @param  {Object}   options Optional sails config object
+   * @param  {Function} done    Optional Callback
+  ###
   @buildAndLift: (dir, options, done) ->
     @build dir, =>
       @lift dir, options, done
