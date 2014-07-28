@@ -12,11 +12,12 @@ var appHelper = require('./lib/appHelper');
  * Exports
  */
 module.exports = {
-  newBase      : appHelper.newBase,
-  newModule    : appHelper.newModule,
-  link         : appHelper.link,
-  clean        : appHelper.clean,
-  build        : appHelper.build,
-  lift         : appHelper.lift,
-  buildAndLift : appHelper.buildAndLift
+  newBase         : appHelper.newBase,
+  newModule       : appHelper.newModule,
+  link            : appHelper.link,
+  clean           : appHelper.clean,
+  lift            : appHelper.lift,
+  writePluginFile : appHelper.writePluginFile
+  // build        : appHelper.build,
+  // buildAndLift : appHelper.buildAndLift
 };

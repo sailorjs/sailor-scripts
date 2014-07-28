@@ -16,18 +16,15 @@ sh        = require('execSync');
 
 # -- PRIVATE ---------------------------------------------
 
-DEFAULT_BASE   = 'testApp'
-DEFAULT_MODULE = 'sailor-module-test'
-
-DEFAULT_BASE_PATH   = path.join(process.cwd(), '../' + DEFAULT_BASE)
-DEFAULT_MODULE_PATH = path.join(process.cwd(), '../' + DEFAULT_BASE)
-
-TEMPLATE_BASE    = path.join(__dirname, '../template/base')
-TEMPLATE_MODULE  = path.join(__dirname, '../template/module')
+DEFAULT_BASE       = 'testApp'
+DEFAULT_MODULE     = 'sailor-module-test'
+DEFAULT_BASE_PATH  = path.join(process.cwd(), "/#{DEFAULT_BASE}")
+TEMPLATE_BASE      = path.join(__dirname, '../template/base')
+TEMPLATE_MODULE    = path.join(__dirname, '../template/module')
 
 CHANGE_PATH  = (dir) ->
   args = Args([
-    {dir: Args.STRING | Args.Optional, _default: DEFAULT_BASE_PATH}
+    {dir: Args.STRING | Args.Required}
   ], arguments)
 
   process.chdir args.dir
@@ -69,15 +66,34 @@ class AppHelper
       args.done?()
 
 
+
+  ###*
+   * Write in the plugin file in config/plugins
+   * @param  {String}   source Rext to write
+   * @param  {Function} done   Optional callback
+  ###
+  @writePluginFile: (source, dir, done) ->
+    args = Args([
+      {src:  Args.STRING   | Args.Required}
+      {dir : Args.STRING   | Args.Optional, _default: "#{DEFAULT_BASE_PATH}/config/plugins.coffee"}
+      {done: Args.FUNCTION | Args.Optional, _default: undefined}
+    ], arguments)
+
+    console.log args.dir
+    if fs.existsSync args.dir
+      fs.writeFileSync args.dir, "module.exports.plugins = [" + JSON.stringify(args.src) + "]"
+
+    args.done?()
+
   ###*
    * Generate a new base proyect
    * @param  {String}   name Optional name
    * @param  {String}   dir  Optional path
    * @param  {Function} done Optional Callback
   ###
-  @newBase: (name, dir, done) =>
+  @newBase: (name, dir, options, done) =>
     args = Args([
-      {name: Args.STRING   | Args.Optional, _default: "#{DEFAULT_BASE}"}
+      {name: Args.STRING   | Args.Optional, _default: DEFAULT_BASE}
       {dir : Args.STRING   | Args.Optional, _default: "#{process.cwd()}"}
       {done: Args.FUNCTION | Args.Optional, _default: undefined}
     ], arguments)
@@ -169,17 +185,6 @@ class AppHelper
         return args.done(err)  if err
         sails.kill = sails.lower
         args.done null, sails
-
-
-  ###*
-   * Concatenate Sails 'new' and 'lift' command
-   * @param  {String}   dir     Optional directory
-   * @param  {Object}   options Optional sails config object
-   * @param  {Function} done    Optional Callback
-  ###
-  @buildAndLift: (dir, options, done) ->
-    @build dir, =>
-      @lift dir, options, done
 
 # -- EXPORTS -----------------------------------------------------------------
 

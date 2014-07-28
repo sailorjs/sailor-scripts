@@ -25,17 +25,16 @@ describe 'Link', ->
     scripts.link "#{DIR}/#{MODULE}", "#{DIR}/#{APP}/node_modules/#{MODULE}", ->
       fs.existsSync("#{DIR}/#{APP}/node_modules/#{MODULE}").should.eql true
 
+describe 'writePluginFile', ->
+  it 'module is written in the config file', (done) ->
+    scripts.writePluginFile MODULE, done
+
 describe 'Lift', ->
   it 'starts sails server', (done) ->
     opts =
       log: level: "silent"
       plugins: [MODULE]
     scripts.lift "#{DIR}/#{APP}", opts, done
-
-xdescribe 'Build and Lift a proyect', ->
-  it 'without errors', (done) ->
-    opts = log: levailel: 'silent'
-    scripts.buildAndLift opts, done
 
 describe 'Clean a proyect', ->
   it 'without errors',->
