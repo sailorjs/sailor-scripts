@@ -13,17 +13,18 @@ For more information on configuring the blueprint API, check out:
 http://links.sailsjs.org/docs/config/blueprints
 ###
 module.exports.blueprints =
-  
+
   ###
   NOTE:
   A lot of the configuration options below affect so-called "CRUD methods",
   or your controllers' `find`, `create`, `update`, and `destroy` actions.
-  
+
   It's important to realize that, even if you haven't defined these yourself, as long as
   a model exists with the same name as the controller, Sails will respond with built-in CRUD
   logic in the form of a JSON API, including support for sort, pagination, and filtering.
   ###
-  
+
+
   # Action blueprints speed up the backend development workflow by eliminating the need
   # to manually bind routes. When enabled, GET, POST, PUT, and DELETE routes will be
   # generated for every one of a controller's actions.
@@ -47,14 +48,22 @@ module.exports.blueprints =
   # `POST    /email/send/:id?`
   # `PUT     /email/send/:id?`
   # `DELETE  /email/send/:id?`
-  #
-  #
+
+  # Activate multilang support
+  # if is true the routes are binds to languages path defined in config/locales, e.g.:
+  #    /en/user
+  #    /es/user
+  # Automatically request on route '/' is redirect to aproppiate lang.
+  # This is based on localize header. e.g.:
+  #    /user/1 is fixed to /en/user/1
+  i18n: true
+
   # `actions` are enabled by default, and can be OK for production-- however,
   # if you'd like to continue to use controller/action autorouting in a production deployment,
   # you must take great care not to inadvertently expose unsafe/unintentional controller logic
   # to GET requests.
   actions: true
-  
+
   # RESTful Blueprints
   # (`sails.config.blueprints.rest`)
   #
@@ -73,14 +82,14 @@ module.exports.blueprints =
   # in a production scenario, as long you take standard security precautions
   # (combine w/ policies, etc.)
   rest: true
-  
+
   # Shortcut blueprints are simple helpers to provide access to a controller's CRUD methods
   # from your browser's URL bar.  When enabled, GET, POST, PUT, and DELETE routes will be generated
   # for the controller's`find`, `create`, `update`, and `destroy` actions.
   #
   # `shortcuts` are enabled by default, but should be disabled in production.
   shortcuts: true
-  
+
   # An optional mount path for all blueprint routes on a controller, including `rest`,
   # `actions`, and `shortcuts`.  This allows you to take advantage of blueprint routing,
   # even if you need to namespace your API methods.
@@ -97,7 +106,7 @@ module.exports.blueprints =
   #
   # By default, no prefix is used.
   prefix: ""
-  
+
   # Whether to pluralize controller names in blueprint routes.
   #
   # (NOTE: This only applies to blueprint autoroutes, not manual routes from `sails.config.routes`)
@@ -108,10 +117,10 @@ module.exports.blueprints =
   # PUT    /foos/:id?
   # DELETE /foos/:id?
   pluralize: false
-  
+
   # Whether the blueprint controllers should populate model fetches with
   # data from other models which are linked by associations
-  
+
   # If you have a lot of data in one-to-many associations, leaving this on
   # may result in very heavy api calls
   populate: true
