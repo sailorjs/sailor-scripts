@@ -79,7 +79,6 @@ class AppHelper
       {done: Args.FUNCTION | Args.Optional, _default: undefined}
     ], arguments)
 
-    console.log args.dir
     if fs.existsSync args.dir
       fs.writeFileSync args.dir, "module.exports.plugins = [" + JSON.stringify(args.src) + "]"
 
