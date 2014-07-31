@@ -1,6 +1,10 @@
 # Sailor Scripts
 
-[![Build Status](https://secure.travis-ci.org/sailorjs/sailor-scripts.png?branch=master)](https://travis-ci.org/sailorjs/sailor-scripts)
+[![Build Status](http://img.shields.io/travis/sailorjs/sailor-translate/master.svg?style=flat)](https://travis-ci.org/sailorjs/sailor-scripts)
+[![Dependency status](http://img.shields.io/david/sailorjs/sailor-translate.svg?style=flat)](https://david-dm.org/sailorjs/sailor-scripts)
+[![Dev Dependencies Status](http://img.shields.io/david/dev/sailorjs/sailor-translate.svg?style=flat)](https://david-dm.org/sailorjs/sailor-scripts#info=devDependencies)
+[![NPM Status](http://img.shields.io/npm/dm/sailor-translate.svg?style=flat)](https://www.npmjs.org/package/sailor-scripts)
+[![Gittip](http://img.shields.io/gittip/Kikobeats.svg?style=flat)](https://www.gittip.com/Kikobeats/)
 
 > Scripts for Running Sailor
 
