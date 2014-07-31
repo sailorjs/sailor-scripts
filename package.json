@@ -13,7 +13,7 @@
     "execSync": "^1.0.1-pre",
     "fs-extra": "^0.10.0",
     "lodash": "^2.4.1",
-    "sails": "git://github.com/sailorjs/sailorjs#sailor",
+    "sails": "git://github.com/sailorjs/sailorjs#sails",
     "socket.io-client": "~0.9.16",
     "wrench": "^1.5.8"
   },
