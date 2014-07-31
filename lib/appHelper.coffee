@@ -2,17 +2,17 @@
 # Depedencies
 ###
 
-Args      = require("args-js")
-fs        = require("fs-extra")
-wrench    = require("wrench")
-path      = require("path")
-exec      = require("child_process").exec
-sailsBin  = path.join(__dirname, "../node_modules/sails/bin/sails.js")
-_         = require("lodash")
-_ioClient = require("./sails.io")(require("socket.io-client"))
-Sails     = require("sails/lib/app")
-sailsLift = require("sails/bin/sails-lift")
-sh        = require('execSync');
+Args      = require('args-js')
+fs        = require('fs-extra')
+wrench    = require('wrench')
+path      = require('path')
+exec      = require('child_process').exec
+sailsBin  = path.join(__dirname, '../node_modules/sails/bin/sails.js')
+_         = require('lodash')
+_ioClient = require('./sails.io')(require('socket.io-client'))
+Sails     = require('sails/lib/app')
+sailsLift = require('sails/bin/sails-lift')
+sh        = require('execSync')
 
 # -- PRIVATE ---------------------------------------------
 

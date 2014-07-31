@@ -1,1 +1,1 @@
-module.exports.plugins = ["sailor-module-example"]
+module.exports.plugins = []
