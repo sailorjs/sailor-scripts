@@ -24,6 +24,15 @@ module.exports.blueprints =
   logic in the form of a JSON API, including support for sort, pagination, and filtering.
   ###
 
+  # Activate multilang support
+  # if is true the routes are binds to languages path defined in config/locales, e.g.:
+  #    /en/user
+  #    /es/user
+  # Automatically request on route '/' is redirect to aproppiate lang.
+  # This is based on localize header. e.g.:
+  #    /user/1 is fixed to /en/user/1
+  i18n: true
+
 
   # Action blueprints speed up the backend development workflow by eliminating the need
   # to manually bind routes. When enabled, GET, POST, PUT, and DELETE routes will be
@@ -48,16 +57,7 @@ module.exports.blueprints =
   # `POST    /email/send/:id?`
   # `PUT     /email/send/:id?`
   # `DELETE  /email/send/:id?`
-
-  # Activate multilang support
-  # if is true the routes are binds to languages path defined in config/locales, e.g.:
-  #    /en/user
-  #    /es/user
-  # Automatically request on route '/' is redirect to aproppiate lang.
-  # This is based on localize header. e.g.:
-  #    /user/1 is fixed to /en/user/1
-  i18n: true
-
+  #
   # `actions` are enabled by default, and can be OK for production-- however,
   # if you'd like to continue to use controller/action autorouting in a production deployment,
   # you must take great care not to inadvertently expose unsafe/unintentional controller logic
