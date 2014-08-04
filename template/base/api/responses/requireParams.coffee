@@ -1,18 +1,6 @@
 ###
-422 (Unprocessable Entity) Handler
-
-Usage:
-return res.requireParams();
-return res.requireParams(data);
-return res.requireParams(data, 'some/specific/requireParams/view');
-
-e.g.:
-```
-return res.requireParams(
-'Please choose a valid `password` (6-12 characters)',
-'trial/signup'
-);
-```
+Handler for require params
+delegate in badRequest
 ###
 module.exports = requireParams = (data, options) ->
 
@@ -21,40 +9,12 @@ module.exports = requireParams = (data, options) ->
   res = @res
   sails = req._sails
 
-  # Set status code
-  res.status 422
+  # Data is an array of properties to check
+  missing = []
+  hasOwn = Object::hasOwnProperty
+  Array.isArray(params) or (params = [params])
 
-  # Log error to console
-  if data isnt `undefined`
-    sails.log.verbose "Sending 422 (\"Unprocessable Entity\") response: \n", data
-  else
-    sails.log.verbose "Sending 422 (\"Unprocessable Entity\") response"
+  params.forEach (param) ->
+    missing.push "Missing required parameter: " + param  if not (req.body and hasOwnProperty.call(req.body, param)) and not (req.params and hasOwnProperty.call(req.params, param)) and not hasOwnProperty.call(req.query, param)
 
-  # Only include errors in response if application environment
-  # is not set to 'production'.  In production, we shouldn't
-  # send back any identifying information about errors.
-  data = `undefined`  if sails.config.environment is "production"
-
-  # If the user-agent wants JSON, always respond with JSON
-  return res.jsonx(data)  if req.wantsJSON
-
-  # If second argument is a string, we take that to mean it refers to a view.
-  # If it was omitted, use an empty object (`{}`)
-  options = (if (typeof options is "string") then view: options else options or {})
-
-  # If a view was provided in options, serve it.
-  # Otherwise try to guess an appropriate view, or if that doesn't
-  # work, just send JSON.
-  if options.view
-    res.view options.view,
-      data: data
-
-
-  # If no second argument provided, try to serve the implied view,
-  # but fall back to sending JSON(P) if no view can be inferred.
-  else
-    res.guessView
-      data: data
-    , couldNotGuessView = ->
-      res.jsonx data
-
+  res.badRequest(missing, options) if missing.length

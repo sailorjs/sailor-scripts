@@ -20,4 +20,4 @@ http://links.sailsjs.org/docs/config/log
 # 'verbose': Display calls from `.error()`, `.warn()`, `.debug()`, `.info()` to `.verbose()`
 #
 module.exports = log:
-  level: "silly"
+  level: "info"

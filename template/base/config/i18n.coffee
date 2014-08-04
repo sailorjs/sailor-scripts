@@ -14,6 +14,4 @@ http://links.sailsjs.org/docs/config/i18n
 module.exports.i18n = locales: [
   "en"
   "es"
-  "fr"
-  "de"
 ]

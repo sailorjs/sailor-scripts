@@ -62,7 +62,7 @@ module.exports.blueprints =
   # if you'd like to continue to use controller/action autorouting in a production deployment,
   # you must take great care not to inadvertently expose unsafe/unintentional controller logic
   # to GET requests.
-  actions: true
+  actions: false
 
   # RESTful Blueprints
   # (`sails.config.blueprints.rest`)
@@ -88,7 +88,7 @@ module.exports.blueprints =
   # for the controller's`find`, `create`, `update`, and `destroy` actions.
   #
   # `shortcuts` are enabled by default, but should be disabled in production.
-  shortcuts: true
+  shortcuts: false
 
   # An optional mount path for all blueprint routes on a controller, including `rest`,
   # `actions`, and `shortcuts`.  This allows you to take advantage of blueprint routing,

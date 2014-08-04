@@ -1,4 +1,9 @@
 ###
+Dependencies
+###
+expressValidator = require('express-validator')
+
+###
 HTTP Server Settings
 (sails.config.http)
 
@@ -10,7 +15,8 @@ http://links.sailsjs.org/docs/config/http
 ###
 module.exports.http =
   middleware:
-    
+    expressValidator: expressValidator()
+
     # The order in which middleware should be run for HTTP request.
     # (the Sails router is invoked by the "router" middleware below.)
     order: [
@@ -18,6 +24,7 @@ module.exports.http =
       "cookieParser"
       "session"
       "bodyParser"
+      "expressValidator"
       "handleBodyParserError"
       "compress"
       "methodOverride"
@@ -30,12 +37,12 @@ module.exports.http =
       "500"
     ]
 
-  
+
   # The body parser that will handle incoming multipart HTTP requests.
   # By default as of v0.10, Sails uses [skipper](http://github.com/balderdashy/skipper).
   # See http://www.senchalabs.org/connect/multipart.html for other options.
   # bodyParser: require('skipper')
-  
+
   # The number of seconds to cache flat files on disk being served by
   # Express static middleware (by default, these files are in `.tmp/public`)
   #
