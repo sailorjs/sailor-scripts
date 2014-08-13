@@ -10,4 +10,6 @@ in each of your models.
 # i.e. the name of one of your app's connections (see `config/connections.js`)
 #
 # (defaults to localDiskDb)
-module.exports.models = connection: "localDiskDb"
+module.exports.models =
+  connection: "localDiskDb"
+  migrate   : "safe"
