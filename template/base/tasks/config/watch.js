@@ -12,10 +12,14 @@
  * 		https://github.com/gruntjs/grunt-contrib-watch
  *
  */
-module.exports = function(grunt) {
+ module.exports = function(grunt) {
 
-	grunt.config.set('watch', {
-		api: {
+ 	grunt.config.set('watch', {
+ 		translations: {
+ 			files: ['translation/*.tl'],
+ 			tasks: ['translate_compile', 'js2coffee', 'clean:translate']
+ 		},
+ 		api: {
 
 			// API files to watch:
 			files: ['api/**/*']
@@ -30,5 +34,5 @@ module.exports = function(grunt) {
 		}
 	});
 
-	grunt.loadNpmTasks('grunt-contrib-watch');
-};
+ 	grunt.loadNpmTasks('grunt-contrib-watch');
+ };
