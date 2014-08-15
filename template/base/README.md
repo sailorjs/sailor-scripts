@@ -1,10 +1,12 @@
 # sailor-base
 
-[![Build Status](https://secure.travis-ci.org/Kikobeats/sailor-base.png?branch=master)](https://travis-ci.org/Kikobeats/sailor-base)
-[![Dependency status](https://david-dm.org/Kikobeats/sailor-base.svg)](https://david-dm.org/Kikobeats/sailor-base)
-[![devDependency Status](https://david-dm.org/Kikobeats/sailor-base/dev-status.svg)](https://david-dm.org/Kikobeats/sailor-base#info=devDependencies)
+[![Build Status](http://img.shields.io/travis/GithubUser/AppName/master.svg?style=flat)](https://travis-ci.org/GithubUser/AppName)
+[![Coverage Status](http://img.shields.io/coveralls/GithubUser/AppName/master.svg?style=flat)](https://coveralls.io/r/GithubUser/AppName?branch=master)
+[![Dependency status](http://img.shields.io/david/GithubUser/AppName.svg?style=flat)](https://david-dm.org/GithubUser/AppName)
+[![Dev Dependencies Status](http://img.shields.io/david/dev/GithubUser/AppName.svg?style=flat)](https://david-dm.org/GithubUser/AppName#info=devDependencies)
+[![NPM Status](http://img.shields.io/npm/dm/AppName.svg?style=flat)](https://www.npmjs.org/package/AppName)
+[![Gittip](http://img.shields.io/gittip/GithubUser.svg?style=flat)](https://www.gittip.com/GithubUser/)
 
-[![NPM](https://nodei.co/npm/sailor-base.png?downloads=true&stars=true)](https://npmjs.org/package/sailor-base/)
 
 > A new sailor Proyect
 
