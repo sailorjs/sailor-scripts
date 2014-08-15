@@ -51,4 +51,8 @@ module.exports =  (req, res) ->
       _.each matchingRecords, (record) ->
         actionUtil.subscribeDeep req, record
 
+    # if matchingRecords.length is 0
+    #   err = msg: translate.get("Model.NotFound")
+    #   res.notFound(errorify.serialize(err))
+    # else
     res.ok matchingRecords

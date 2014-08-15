@@ -13,8 +13,7 @@ module.exports = function(grunt) {
 
 	grunt.config.set('clean', {
 		dev: ['.tmp/public/**'],
-		build: ['www'],
-    translate: ['config/translation.js']
+		build: ['www']
 	});
 
 	grunt.loadNpmTasks('grunt-contrib-clean');

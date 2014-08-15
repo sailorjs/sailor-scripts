@@ -2,26 +2,24 @@
   "name": "sailor-base",
   "description": "A new sailor Proyect",
   "version": "0.0.0",
-  "author": {
-    "name": "Kiko Beats",
-    "email": "josefrancisco.verdu@gmail.com",
-    "url": "https://github.com/Kikobeats"
-  },
+  "author": "",
   "dependencies": {
-    "grunt": "0.4.2",
-    "grunt-contrib-clean": "~0.5.0",
-    "grunt-contrib-coffee": "~0.10.1",
-    "grunt-contrib-concat": "~0.3.0",
-    "grunt-contrib-copy": "~0.5.0",
-    "grunt-contrib-cssmin": "~0.9.0",
-    "grunt-contrib-less": "0.11.1",
-    "grunt-contrib-uglify": "~0.4.0",
-    "grunt-contrib-watch": "~0.5.3",
-    "grunt-sync": "~0.0.4",
-    "include-all": "~0.1.3",
-    "rc": "~0.3.3",
-    "sails-disk": "~0.10.0",
-    "express-validator": "^2.3.0"
+    "express-validator": "*",
+    "grunt": "*",
+    "grunt-contrib-clean": "*",
+    "grunt-contrib-coffee": "*",
+    "grunt-contrib-concat": "*",
+    "grunt-contrib-copy": "*",
+    "grunt-contrib-cssmin": "*",
+    "grunt-contrib-less": "*",
+    "grunt-contrib-uglify": "*",
+    "grunt-contrib-watch": "*",
+    "grunt-js2coffee": "*",
+    "grunt-sync": "*",
+    "grunt-translate-compile": "git://github.com/Kikobeats/translate-compile",
+    "include-all": "*",
+    "rc": "*",
+    "sails-disk": "*"
   },
   "devDependencies": {
     "mocha": "*",
@@ -34,7 +32,7 @@
   ],
   "license": "MIT",
   "main": "",
-  "repository": "Kikobeats/sailor-base",
+  "repository": "",
   "scripts": {
     "test": "sh test/test.sh",
     "prepublish": "npm prune"

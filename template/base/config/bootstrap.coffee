@@ -3,8 +3,6 @@ Dependencies
 ###
 sailor    = require 'sailorjs'
 translate = sailor.translate
-Base      = require './translation'
-
 
 ###
 Bootstrap
@@ -17,5 +15,5 @@ For more information on bootstrapping your app, check out:
 http://links.sailsjs.org/docs/config/bootstrap
 ###
 module.exports.bootstrap = (cb) ->
-  translate.add(Base)
+  translate.add sails.config.translations
   cb()

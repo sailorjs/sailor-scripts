@@ -5,7 +5,5 @@ module.exports = function (grunt) {
 		'less:dev',
 		'copy:dev',
 		'coffee:dev',
-    'js2coffee:dev',
-    'clean:translate'
 	]);
 };

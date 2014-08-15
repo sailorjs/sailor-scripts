@@ -2,11 +2,13 @@ module.exports = function(grunt) {
   grunt.config.set('translate_compile', {
     main: {
       options: {
-        multipleObjects: true,
-        moduleExports: true
+        translationVar  :'translations',
+        asJson          : false,
+        moduleExports   : true,
+        coffee          : true
       },
       files: {
-        'config/translation.js': ['translation/*.tl']
+        'config/translation.coffee': ['translation/*.tl']
       }
     }
   });
