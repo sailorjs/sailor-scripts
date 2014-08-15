@@ -14,7 +14,6 @@
     "grunt-contrib-less": "*",
     "grunt-contrib-uglify": "*",
     "grunt-contrib-watch": "*",
-    "grunt-js2coffee": "*",
     "grunt-sync": "*",
     "grunt-translate-compile": "git://github.com/Kikobeats/translate-compile",
     "include-all": "*",
