@@ -1,0 +1,28 @@
+{
+  "name": "sailor-sailor-module-base",
+  "description": "New module for Sailor",
+  "version": "0.0.0",
+  "author": {
+    "name": "Kiko Beats",
+    "email": "josefrancisco.verdu@gmail.com",
+    "url": "https://github.com/Kikobeats"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "mocha": "*",
+    "should": "*"
+  },
+  "engines": {},
+  "homepage": "",
+  "keywords": [
+  "sailor",
+  "module"
+  ],
+  "license": "MIT",
+  "main": "",
+  "repository": "Kikobeats/sailor-sailor-module-base",
+  "scripts": {
+    "test": "sh test/test.sh",
+    "prepublish": "npm prune"
+  }
+}
