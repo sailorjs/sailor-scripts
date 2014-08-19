@@ -175,10 +175,6 @@ class AppHelper
 
     CHANGE_PATH args.dir
 
-    _.defaults args.options,
-      # defaults options. Only can be overwritten
-      port: 1342
-
     Sails().lift args.options, (err, sails) ->
       if args.done?
         return args.done(err)  if err
