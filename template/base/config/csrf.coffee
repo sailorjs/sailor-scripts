@@ -45,7 +45,7 @@ http://beta.sailsjs.org/#/documentation/reference/sails.config/sails.config.csrf
 Enabled CSRF protection for your site?                                    *
 ###
 
-module.exports.csrf = true
+module.exports.csrf = false
 
 ###
 You may also specify more fine-grained settings for CSRF, including the   *

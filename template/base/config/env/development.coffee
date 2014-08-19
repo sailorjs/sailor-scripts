@@ -8,7 +8,7 @@ be committed to your repository unless you add it to your .gitignore
 file.  If your repository will be publicly viewable, don't add
 any private information to this file!
 ###
-module.exports =
+module.exports = {}
 
 ###
 Set the default database connection for models in the development       *
