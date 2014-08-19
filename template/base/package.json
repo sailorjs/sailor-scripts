@@ -19,7 +19,8 @@
     "grunt-contrib-uglify": "*",
     "grunt-contrib-cssmin": "*",
     "grunt-contrib-less": "*",
-    "grunt-contrib-coffee": "*"
+    "grunt-contrib-coffee": "*",
+    "grunt-translate-compile": "git://github.com/Kikobeats/translate-compile"
   },
   "devDependencies": {
     "mocha": "*",
