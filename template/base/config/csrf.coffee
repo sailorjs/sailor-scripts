@@ -17,14 +17,14 @@ and that the requests they're making are intentional and legitimate.
 
 This token has a short-lived expiration timeline, and must be acquired by either:
 
-(a)		For traditional view-driven web apps:
+(a)   For traditional view-driven web apps:
 Fetching it from one of your views, where it may be accessed as
 a local variable, e.g.:
 <form>
 <input type="hidden" name="_csrf" value="<%= _csrf %>" />
 </form>
 
-or (b)	For AJAX/Socket-heavy and/or single-page apps:
+or (b)  For AJAX/Socket-heavy and/or single-page apps:
 Sending a GET request to the `/csrfToken` route, where it will be returned
 as JSON, e.g.:
 { _csrf: 'ajg4JD(JGdajhLJALHDa' }
@@ -36,5 +36,24 @@ In AJAX/Socket-heavy apps, just send a GET request to the /csrfToken route to ge
 
 For more information on CSRF, check out:
 http://en.wikipedia.org/wiki/Cross-site_request_forgery
+
+For more information on this configuration file, including info on CSRF + CORS, see:
+http://beta.sailsjs.org/#/documentation/reference/sails.config/sails.config.csrf.html
 ###
-module.exports.csrf = false
+
+###
+Enabled CSRF protection for your site?                                    *
+###
+
+module.exports.csrf = true
+
+###
+You may also specify more fine-grained settings for CSRF, including the   *
+domains which are allowed to request the CSRF token via AJAX. These       *
+settings override the general CORS settings in your config/cors.js file.  *
+###
+
+# module.exports.csrf = {
+#    grantTokenViaAjax: true,
+#    origin: ''
+# }

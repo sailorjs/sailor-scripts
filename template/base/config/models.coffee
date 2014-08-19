@@ -4,12 +4,24 @@ Default model configuration
 
 Unless you override them, the following properties will be included
 in each of your models.
+
+For more info on Sails models, see:
+http://sailsjs.org/#/documentation/concepts/ORM
+###
+module.exports.models =
+
+###
+Your app's default connection. i.e. the name of one of your app's        *
+connections (see `config/connections.js`)                                *
 ###
 
-# Your app's default connection.
-# i.e. the name of one of your app's connections (see `config/connections.js`)
-#
-# (defaults to localDiskDb)
-module.exports.models =
-  connection: "localDiskDb"
-  migrate   : "safe"
+connection: 'localDiskDb'
+
+###
+How and whether Sails will attempt to automatically rebuild the          *
+tables/collections/etc. in your schema.                                  *
+
+See http://sailsjs.org/#/documentation/concepts/ORM/model-settings.html  *
+###
+
+migrate: 'safe'
