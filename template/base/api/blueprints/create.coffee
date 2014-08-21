@@ -20,7 +20,7 @@ Optional:
 @param {String} callback - default jsonp callback param (i.e. the name of the js function returned)
 @param {*} * - other params will be used as `values` in the create
 ###
-module.exports = createRecord = (req, res) ->
+module.exports = (req, res) ->
   Model = actionUtil.parseModel(req)
 
   # Create data object (monolithic combination of all parameters)
@@ -28,23 +28,27 @@ module.exports = createRecord = (req, res) ->
   data = actionUtil.parseValues(req)
 
   # Create new instance of model using data from params
-  Model.create(data).exec created = (err, newInstance) ->
+  Model.create(data).populateAll().exec (err, newInstance) ->
 
     # Differentiate between waterline-originated validation errors
     # and serious underlying issues. Respond with badRequest if a
     # validation error is encountered, w/ validation info.
     return res.negotiate(err)  if err
 
-    # If we have the pubsub hook, use the model class's publish method
-    # to notify all subscribers about the created item
-    if req._sails.hooks.pubsub
-      if req.isSocket
-        Model.subscribe req, newInstance
-        Model.introduce newInstance
-      Model.publishCreate newInstance, not req.options.mirror and req
+    # Use find method to return the model for the populate option
+    Model.findOne(newInstance.id).populateAll().exec (err, newInstance) ->
 
-    # Send JSONP-friendly response if it's supported
-    # (HTTP 201: Created)
-    res.status 201
-    res.ok newInstance.toJSON()
-    return
+      # If we have the pubsub hook, use the model class's publish method
+      # to notify all subscribers about the created item
+      if req._sails.hooks.pubsub
+        if req.isSocket
+          Model.subscribe req, newInstance
+          Model.introduce newInstance
+        Model.publishCreate newInstance, not req.options.mirror and req
+
+      # Send JSONP-friendly response if it's supported
+      # (HTTP 201: Created)
+
+      # Change the id for user.email
+      res.status 201
+      res.ok newInstance
