@@ -46,9 +46,5 @@ module.exports = (req, res) ->
           Model.introduce newInstance
         Model.publishCreate newInstance, not req.options.mirror and req
 
-      # Send JSONP-friendly response if it's supported
-      # (HTTP 201: Created)
-
-      # Change the id for user.email
       res.status 201
       res.ok newInstance
