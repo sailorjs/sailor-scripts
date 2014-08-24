@@ -4,6 +4,7 @@
   "version": "0.0.0",
   "author": "",
   "dependencies": {
+    "sailorjs": "git://github.com/sailorjs/sailorjs",
     "jwt-simple": "*",
     "express-validator": "*",
     "sails-disk": "*",
