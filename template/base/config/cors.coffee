@@ -62,4 +62,4 @@ response to preflight requests.                                          *
 e.g: Authorization, content-type
 ###
 
-headers: 'Authorization'
+headers: 'content-type, authorization'
