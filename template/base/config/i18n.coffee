@@ -27,7 +27,7 @@ most browsers), but it's still useful if you need to localize the         *
 response for requests made by non-browser clients (e.g. cURL).            *
 ###
 
-# defaultLocale: 'en',
+defaultLocale: 'en'
 
 ###
 Automatically add new keys to locale (translation) files when they are    *

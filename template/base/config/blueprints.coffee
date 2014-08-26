@@ -31,8 +31,9 @@ if is true the routes are binds to languages path defined in config/locales, e.g
 Automatically request on route '/' is redirect to aproppiate lang.
 This is based on localize header. e.g.:
    /user/1 is fixed to /en/user/1
-i18n: true
+
 ###
+i18n: true
 
 ###
 Action routes speed up the backend development workflow by               *

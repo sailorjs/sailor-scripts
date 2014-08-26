@@ -18,6 +18,7 @@ module.exports = (req, res, next) ->
 
   sails    = req._sails
   locales  = sails.config.i18n.locales
+  _default = sails.config.i18n.defaultLocale
   lang     = req.param 'lang'
 
   unless lang?
@@ -28,7 +29,7 @@ module.exports = (req, res, next) ->
     if valid
       lang = path
     else
-      lang = req.language or translate.default()
+      lang = req.language or _default
 
   # updated the language in `req` and `translate`
   req.language = lang
