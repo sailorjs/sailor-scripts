@@ -1,9 +1,4 @@
 ###
-Dependencies
-###
-expressValidator = require('express-validator')
-
-###
 HTTP Server Settings
 (sails.config.http)
 
@@ -14,8 +9,7 @@ For more information on configuration, check out:
 http://links.sailsjs.org/docs/config/http
 ###
 module.exports.http =
-  middleware:
-    expressValidator: expressValidator()
+  # middleware:
 
     # The order in which middleware should be run for HTTP request.
     # (the Sails router is invoked by the "router" middleware below.)
@@ -24,7 +18,6 @@ module.exports.http =
       "cookieParser"
       "session"
       "bodyParser"
-      "expressValidator"
       "handleBodyParserError"
       "compress"
       "methodOverride"
