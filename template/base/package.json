@@ -3,7 +3,6 @@
   "description": "A new sailor Proyect",
   "version": "0.0.0",
   "dependencies": {
-    "express-validator": "*",
     "grunt": "*",
     "grunt-contrib-clean": "*",
     "grunt-contrib-coffee": "*",
