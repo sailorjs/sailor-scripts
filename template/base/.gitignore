@@ -1,13 +1,15 @@
 ############################
-# npm
+# node & npm
 ############################
+
 node_modules
 npm-debug.log
-
+.node_history
 
 ############################
 # tmp, editor & OS files
 ############################
+
 .tmp
 *.swo
 *.swp
@@ -19,15 +21,15 @@ npm-debug.log
 .idea
 nbproject
 
-
 ############################
 # Tests
 ############################
+
 testApp
 coverage
-
 
 ############################
 # Other
 ############################
-.node_history
+
+logs
