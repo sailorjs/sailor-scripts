@@ -1,7 +1,7 @@
 {
   "name": "sailor-scripts",
   "description": "Scripts for Running Sailor",
-  "version": "0.4.5",
+  "version": "0.4.6",
   "author": {
     "name": "Kiko Beats",
     "email": "josefrancisco.verdu@gmail.com",
@@ -28,7 +28,6 @@
   "main": "",
   "repository": "sailorjs/sailor-scripts",
   "scripts": {
-    "test": "sh test/test.sh",
-    "prepublish": "npm prune"
+    "test": "sh test/test.sh"
   }
 }
