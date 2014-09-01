@@ -7,11 +7,8 @@ module.exports = function(grunt) {
         moduleExports   : true,
         coffee          : true
       },
-      files: {
-        'config/translation.coffee': ['translation/*.tl']
-      }
+      files: {'config/translation.coffee': ['translation/*.tl']}
     }
   });
-
   grunt.loadNpmTasks('grunt-translate-compile');
 };

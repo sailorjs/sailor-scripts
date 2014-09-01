@@ -17,7 +17,7 @@
  	grunt.config.set('watch', {
  		translations: {
  			files: ['translation/*.tl'],
- 			tasks: ['translate_compile', 'js2coffee', 'clean:translate']
+ 			tasks: ['translate_compile']
  		},
  		api: {
 
