@@ -211,6 +211,8 @@ class AppHelper
 
     process.chdir args.dir
 
+
+
   @_resolvePath: (name) ->
     result = @execute "which #{name}"
 
@@ -226,6 +228,8 @@ class AppHelper
     route = path.resolve relative_path, link
     route = path.join route, '../..'
 
+
+
   ###
   Localize a dependency and return the path
   ###
@@ -238,6 +242,8 @@ class AppHelper
     else if sailorJSON['dependencies'][moduleName] or sailorJSON['devDependencies'][moduleName]
       path.join "#{SCOPE.SAILOR}", 'node_modules', moduleName
     else throw new Error "Dependency '#{moduleName}' not found"
+
+
 
   ###
   For each Dependency localize the source module path and create
