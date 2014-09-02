@@ -1,6 +1,4 @@
-###
-# Depedencies
-###
+# -- DEPENDENCIES --------------------------------------------------------------
 
 Args      = require('args-js')
 fs        = require('fs-extra')
@@ -14,7 +12,7 @@ Sails     = require('sails/lib/app')
 sailsLift = require('sails/bin/sails-lift')
 sh        = require('execSync')
 
-# -- GLOBALS ---------------------------------------------
+# -- GLOBALS ------------------------------------------------------------------
 
 DEFAULT_BASE       = 'testApp'
 DEFAULT_MODULE     = 'sailor-module-test'
@@ -32,7 +30,7 @@ SCOPE =
 
 class AppHelper
 
-  ###*
+  ###
    * Run a shell command without ouput
    * @param  {String} command Command to execute
    * @param  {Function} orig Optional Callback
@@ -46,7 +44,9 @@ class AppHelper
     sh.run("#{args.cmd} #{NO_MESSAGE}")
     args.done?()
 
-  ###*
+
+
+  ###
    * Execute a shell command and return the output
    * @param  {String} command Command to execute
    * @param  {Function} orig Optional Callback
@@ -60,7 +60,9 @@ class AppHelper
     result = sh.exec(args.cmd)
     if args.done? then args.done(result) else result
 
-  ###*
+
+
+  ###
    * Create a symbolic link
    * @param  {String}   orig Origin path
    * @param  {String}   dist Destination path
@@ -73,12 +75,11 @@ class AppHelper
       {done: Args.FUNCTION | Args.Optional, _default: undefined}
     ], arguments)
 
-    fs.symlink args.orig, args.dist, ->
-      args.done?()
+    fs.symlink args.orig, args.dist, -> args.done?()
 
 
 
-  ###*
+  ###
    * Write in the plugin file in config/plugins
    * @param  {String}   source Rext to write
    * @param  {Function} done   Optional callback
@@ -94,6 +95,8 @@ class AppHelper
       fs.writeFileSync args.dir, "module.exports.plugins = [" + JSON.stringify(args.src) + "]"
 
     args.done?()
+
+
 
   ###*
    * Generate a new base proyect
@@ -119,6 +122,8 @@ class AppHelper
 
     # search the dependency in sails or sailor and linkin in the folder of the project
     @_copyDependencies(appJSON, args.done)
+
+
 
   ###*
    * Generate a new module for a proyect
@@ -174,6 +179,7 @@ class AppHelper
         args.done()
 
 
+
   ###*
    * Run Sails 'lift' command
    * @param  {String}   dir     Optional directory
@@ -196,7 +202,7 @@ class AppHelper
         sails.kill = sails.lower
         args.done null, sails
 
-  # -- PRIVATE ---------------------------------------------
+  # -- PRIVATE ------------------------------------------------------------------
 
   @_changePath: (dir) ->
     args = Args([
@@ -224,8 +230,8 @@ class AppHelper
   Localize a dependency and return the path
   ###
   @_searchDependency = (moduleName) ->
-    sailsJSON          = require("#{SCOPE.SAILS}/package.json")
-    sailorJSON          = require("#{SCOPE.SAILOR}/package.json")
+    sailsJSON  = require("#{SCOPE.SAILS}/package.json")
+    sailorJSON = require("#{SCOPE.SAILOR}/package.json")
 
     if sailsJSON['dependencies'][moduleName] or sailsJSON['devDependencies'][moduleName]
       path.join "#{SCOPE.SAILS}", 'node_modules', moduleName
@@ -257,6 +263,6 @@ class AppHelper
     fs.symlink SCOPE.SAILOR, sailorLocal, "junction", (symLinkErr) ->
       cb?()
 
-# -- EXPORTS -----------------------------------------------------------------
+# -- EXPORTS ------------------------------------------------------------------
 
 exports = module.exports = AppHelper
