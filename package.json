@@ -1,13 +1,14 @@
 {
   "name": "sailor-scripts",
   "description": "Scripts for Running Sailor",
-  "version": "0.4.6",
+  "version": "0.4.7",
   "author": {
     "name": "Kiko Beats",
     "email": "josefrancisco.verdu@gmail.com",
     "url": "https://github.com/Kikobeats"
   },
   "dependencies": {
+    "chalk"  : "*",
     "args-js": "*",
     "coffee-script": "*",
     "execSync": "*",

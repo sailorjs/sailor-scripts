@@ -1,16 +1,16 @@
 # -- DEPENDENCIES --------------------------------------------------------------
 
-Args      = require('args-js')
-fs        = require('fs-extra')
-wrench    = require('wrench')
-path      = require('path')
-exec      = require('child_process').exec
-sailsBin  = path.join(__dirname, '../node_modules/sails/bin/sails.js')
-_         = require('lodash')
+Args      = require 'args-js'
+fs        = require 'fs-extra'
+wrench    = require 'wrench'
+path      = require 'path'
+chalk     = require 'chalk'
+sh        = require 'execSync'
+_         = require 'lodash'
+Sails     = require 'sails/lib/app'
+sailsBin  = path.join __dirname, '../node_modules/sails/bin/sails.js'
+sailsLift = require 'sails/bin/sails-lift'
 _ioClient = require('./sails.io')(require('socket.io-client'))
-Sails     = require('sails/lib/app')
-sailsLift = require('sails/bin/sails-lift')
-sh        = require('execSync')
 
 # -- GLOBALS ------------------------------------------------------------------
 
@@ -261,7 +261,7 @@ class AppHelper
         fs.symlinkSync srcModulePath, destModulePath, "junction"
 
       catch e
-        console.log "Dependency #{moduleName} not found. Installing..."
+        console.log "#{chalk.blue('info')}   : Dependency '#{moduleName}' doesn't found. Installing..."
         @run "cd #{app_node} && npm install #{moduleName}"
 
     # Finally link sailor
