@@ -14,27 +14,40 @@ Sails     = require('sails/lib/app')
 sailsLift = require('sails/bin/sails-lift')
 sh        = require('execSync')
 
-# -- PRIVATE ---------------------------------------------
+# -- GLOBALS ---------------------------------------------
 
 DEFAULT_BASE       = 'testApp'
 DEFAULT_MODULE     = 'sailor-module-test'
 DEFAULT_BASE_PATH  = path.join(process.cwd(), "/#{DEFAULT_BASE}")
 TEMPLATE_BASE      = path.join(__dirname, '../template/base')
 TEMPLATE_MODULE    = path.join(__dirname, '../template/module')
+NO_MESSAGE         = ">/dev/null 2>/dev/null"
 
-CHANGE_PATH  = (dir) ->
-  args = Args([
-    {dir: Args.STRING | Args.Required}
-  ], arguments)
+SCOPE =
+  SAILS  : null
+  SAILOR : null
+  APP    : null
 
-  process.chdir args.dir
-
-# -- STATIC ------------------------------------------------------------------
+# -- PUBLIC ------------------------------------------------------------------
 
 class AppHelper
 
   ###*
-   * Execute a shell command
+   * Run a shell command without ouput
+   * @param  {String} command Command to execute
+   * @param  {Function} orig Optional Callback
+  ###
+  @run: (command, done) ->
+    args = Args([
+      {cmd: Args.STRING    | Args.Required}
+      {done: Args.FUNCTION | Args.Optional, _default: undefined}
+    ], arguments)
+
+    sh.run("#{args.cmd} #{NO_MESSAGE}")
+    args.done?()
+
+  ###*
+   * Execute a shell command and return the output
    * @param  {String} command Command to execute
    * @param  {Function} orig Optional Callback
   ###
@@ -44,10 +57,8 @@ class AppHelper
       {done: Args.FUNCTION | Args.Optional, _default: undefined}
     ], arguments)
 
-    sh.run(args.cmd)
-    args.done?()
-
-
+    result = sh.exec(args.cmd)
+    if args.done? then args.done(result) else result
 
   ###*
    * Create a symbolic link
@@ -55,7 +66,7 @@ class AppHelper
    * @param  {String}   dist Destination path
    * @param  {Function} done Optional Callback
   ###
-  @link: (orig, dist, done) ->
+  @link: (orig, dist, done) =>
     args = Args([
       {orig: Args.STRING   | Args.Required}
       {dist: Args.STRING   | Args.Required}
@@ -97,13 +108,17 @@ class AppHelper
       {done: Args.FUNCTION | Args.Optional, _default: undefined}
     ], arguments)
 
-    wrench.copyDirSyncRecursive TEMPLATE_BASE, "#{args.dir}/#{args.name}",
-      forceDelete: true
+    SCOPE.APP    = "#{args.dir}/#{args.name}"
+    wrench.copyDirSyncRecursive TEMPLATE_BASE, SCOPE.APP, forceDelete: true
 
-    @execute("cd #{args.dir}/#{args.name} && npm install >/dev/null 2>/dev/null");
-    args.done?()
+    appJSON  = require("#{SCOPE.APP}/package.json")
+    delete appJSON.dependencies.sailorjs
 
+    SCOPE.SAILS = @_resolvePath 'sails'
+    SCOPE.SAILOR = @_resolvePath 'sailor'
 
+    # search the dependency in sails or sailor and linkin in the folder of the project
+    @_copyDependencies(appJSON, args.done)
 
   ###*
    * Generate a new module for a proyect
@@ -120,7 +135,7 @@ class AppHelper
 
     wrench.copyDirSyncRecursive TEMPLATE_MODULE, "#{args.dir}/#{args.name}",
       forceDelete: true
-    @execute("cd #{args.dir}/#{args.name} && npm install >/dev/null 2>/dev/null");
+    @run("cd #{args.dir}/#{args.name} && npm install >/dev/null 2>/dev/null");
     args.done?()
 
 
@@ -165,7 +180,7 @@ class AppHelper
    * @param  {Object}   options Optional sails config object
    * @param  {Function} done    Optional Callback
   ###
-  @lift: (dir, options, done) ->
+  @lift: (dir, options, done) =>
     delete process.env.NODE_ENV
     args = Args([
       {dir:     Args.STRING   | Args.Optional, _default: DEFAULT_BASE}
@@ -173,13 +188,74 @@ class AppHelper
       {done:    Args.FUNCTION | Args.Optional, _default: undefined}
     ], arguments)
 
-    CHANGE_PATH args.dir
+    @_changePath args.dir
 
     Sails().lift args.options, (err, sails) ->
       if args.done?
         return args.done(err)  if err
         sails.kill = sails.lower
         args.done null, sails
+
+  # -- PRIVATE ---------------------------------------------
+
+  @_changePath: (dir) ->
+    args = Args([
+      {dir: Args.STRING | Args.Required}
+    ], arguments)
+
+    process.chdir args.dir
+
+  @_resolvePath: (name) ->
+    result = @execute "which #{name}"
+
+    if result.stdout[result.stdout.length-1] is '\n'
+      result.stdout = result.stdout.substring(0, result.stdout.length - 1)
+
+    # get the relative path
+    relative_path = result.stdout.split("/")
+    relative_path.splice(relative_path.length-1, 1)
+    relative_path = relative_path.join("/")
+    # get the symlink value
+    link  = fs.readlinkSync result.stdout
+    route = path.resolve relative_path, link
+    route = path.join route, '../..'
+
+  ###
+  Localize a dependency and return the path
+  ###
+  @_searchDependency = (moduleName) ->
+    sailsJSON          = require("#{SCOPE.SAILS}/package.json")
+    sailorJSON          = require("#{SCOPE.SAILOR}/package.json")
+
+    if sailsJSON['dependencies'][moduleName] or sailsJSON['devDependencies'][moduleName]
+      path.join "#{SCOPE.SAILS}", 'node_modules', moduleName
+    else if sailorJSON['dependencies'][moduleName] or sailorJSON['devDependencies'][moduleName]
+      path.join "#{SCOPE.SAILOR}", 'node_modules', moduleName
+    else throw new Error "Dependency '#{moduleName}' not found"
+
+  ###
+  For each Dependency localize the source module path and create
+  a symlink in the folder of the project
+  ###
+  @_copyDependencies = (pkg, cb) =>
+    moduleNames = Object.keys pkg.dependencies
+    app_node    = path.resolve SCOPE.APP, 'node_modules'
+    fs.mkdirsSync app_node
+
+    for moduleName in moduleNames
+      try
+        srcModulePath = @_searchDependency(moduleName)
+        destModulePath = path.resolve(SCOPE.APP, 'node_modules', moduleName)
+        fs.symlinkSync srcModulePath, destModulePath, "junction"
+
+      catch e
+        console.log "Dependency #{moduleName} not found. Installing..."
+        @run "cd #{app_node} && npm install #{moduleName}"
+
+    # Finally link sailor
+    sailorLocal = path.resolve(SCOPE.APP, 'node_modules', 'sailorjs')
+    fs.symlink SCOPE.SAILOR, sailorLocal, "junction", (symLinkErr) ->
+      cb?()
 
 # -- EXPORTS -----------------------------------------------------------------
 

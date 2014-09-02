@@ -8,14 +8,14 @@
     "url": "https://github.com/Kikobeats"
   },
   "dependencies": {
-    "args-js": "^0.10.4",
+    "args-js": "*",
     "coffee-script": "*",
-    "execSync": "^1.0.1-pre",
-    "fs-extra": "^0.10.0",
-    "lodash": "^2.4.1",
+    "execSync": "*",
+    "fs-extra": "*",
+    "lodash": "*",
     "sails": "git://github.com/sailorjs/sails",
     "socket.io-client": "~0.9.16",
-    "wrench": "^1.5.8"
+    "wrench": "*"
   },
   "devDependencies": {
     "mocha": "*",
