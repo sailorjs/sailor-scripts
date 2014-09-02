@@ -24,7 +24,7 @@
   },
   "engines": {},
   "homepage": "",
-  "keywords": [],
+  "keywords": ["sailor", "sails"],
   "license": "MIT",
   "main": "",
   "repository": "sailorjs/sailor-scripts",
