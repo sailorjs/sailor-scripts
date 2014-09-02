@@ -9,8 +9,13 @@
   },
   "dependencies": {},
   "devDependencies": {
+    "grunt": "*",
+    "grunt-contrib-watch": "*",
     "mocha": "*",
-    "should": "*"
+    "should": "*",
+    "superagent": "*",
+    "sailor-scripts": "git://github.com/sailorjs/sailor-scripts",
+    "grunt-translate-compile": "git://github.com/Kikobeats/translate-compile"
   },
   "engines": {},
   "homepage": "",

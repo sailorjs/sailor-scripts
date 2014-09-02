@@ -98,7 +98,7 @@ class AppHelper
 
 
 
-  ###*
+  ###
    * Generate a new base proyect
    * @param  {String}   name Optional name
    * @param  {String}   dir  Optional path
@@ -115,9 +115,9 @@ class AppHelper
     wrench.copyDirSyncRecursive TEMPLATE_BASE, SCOPE.APP, forceDelete: true
 
     appJSON  = require("#{SCOPE.APP}/package.json")
-    delete appJSON.dependencies.sailorjs
+    delete appJSON.dependencies?.sailorjs
 
-    SCOPE.SAILS = @_resolvePath 'sails'
+    SCOPE.SAILS  = @_resolvePath 'sails'
     SCOPE.SAILOR = @_resolvePath 'sailor'
 
     # search the dependency in sails or sailor and linkin in the folder of the project
@@ -125,7 +125,7 @@ class AppHelper
 
 
 
-  ###*
+  ###
    * Generate a new module for a proyect
    * @param  {String}   name name
    * @param  {String}   dir  Optional path
@@ -138,14 +138,21 @@ class AppHelper
       {done: Args.FUNCTION | Args.Optional, _default: undefined}
     ], arguments)
 
-    wrench.copyDirSyncRecursive TEMPLATE_MODULE, "#{args.dir}/#{args.name}",
-      forceDelete: true
-    @run("cd #{args.dir}/#{args.name} && npm install >/dev/null 2>/dev/null");
-    args.done?()
+    SCOPE.APP    = "#{args.dir}/#{args.name}"
+    wrench.copyDirSyncRecursive TEMPLATE_MODULE, SCOPE.APP, forceDelete: true
+
+    appJSON  = require("#{SCOPE.APP}/package.json")
+    delete appJSON.dependencies?.sailorjs
+
+    SCOPE.SAILS  = @_resolvePath 'sails'
+    SCOPE.SAILOR = @_resolvePath 'sailor'
+
+    # search the dependency in sails or sailor and linkin in the folder of the project
+    @_copyDependencies(appJSON, args.done)
 
 
 
-  ###*
+  ###
    * Clear a folder
    * @param  {[type]}   dir  Optional directory
    * @param  {Function} done Optional Callback
@@ -160,27 +167,7 @@ class AppHelper
     args.done?()
 
 
-
-  ###*
-   * Run Sails 'new' command
-   * @param  {[type]}   dir  Optional directory
-   * @param  {Function} done Optional Callback
   ###
-  @sailsNew: (dir, done) ->
-    args = Args([
-      {dir:     Args.STRING   | Args.Optional, _default: DEFAULT_BASE}
-      {done:    Args.FUNCTION | Args.Optional, _default: undefined}
-    ], arguments)
-
-    @clean(args.dir)
-    exec sailsBin + " new " + DEFAULT_BASE, (err) ->
-      if args.done?
-        return args.done(err)  if err
-        args.done()
-
-
-
-  ###*
    * Run Sails 'lift' command
    * @param  {String}   dir     Optional directory
    * @param  {Object}   options Optional sails config object
@@ -250,7 +237,7 @@ class AppHelper
   a symlink in the folder of the project
   ###
   @_copyDependencies = (pkg, cb) =>
-    moduleNames = Object.keys pkg.dependencies
+    moduleNames = _.union(Object.keys(pkg.devDependencies), Object.keys(pkg.dependencies))
     app_node    = path.resolve SCOPE.APP, 'node_modules'
     fs.mkdirsSync app_node
 
@@ -268,6 +255,23 @@ class AppHelper
     sailorLocal = path.resolve(SCOPE.APP, 'node_modules', 'sailorjs')
     fs.symlink SCOPE.SAILOR, sailorLocal, "junction", (symLinkErr) ->
       cb?()
+
+  ###
+   * Run Sails 'new' command
+   * @param  {[type]}   dir  Optional directory
+   * @param  {Function} done Optional Callback
+  ###
+  @_sailsNew: (dir, done) ->
+    args = Args([
+      {dir:     Args.STRING   | Args.Optional, _default: DEFAULT_BASE}
+      {done:    Args.FUNCTION | Args.Optional, _default: undefined}
+    ], arguments)
+
+    @clean(args.dir)
+    exec sailsBin + " new " + DEFAULT_BASE, (err) ->
+      if args.done?
+        return args.done(err)  if err
+        args.done()
 
 # -- EXPORTS ------------------------------------------------------------------
 

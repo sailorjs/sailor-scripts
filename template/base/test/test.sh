@@ -1,6 +1,6 @@
 #!/bin/bash -x
 
-function welcome {
+welcome() {
 echo "   _____ _____ _____ _____ _____ _   _ _____ "
 echo "  |_   _|  ___/  ___|_   _|_   _| \ | |  __ \\"
 echo "    | | | |__ \ \`--.  | |   | | |  \| | |  \/"
@@ -9,13 +9,13 @@ echo "    | | | |___/\__/ / | |  _| |_| |\  | |_\ \\"
 echo "    \_/ \____/\____/  \_/  \___/\_| \_/\____/"
 }
 
-function run {
+run() {
   mocha \
   -b \
   --compilers coffee:coffee-script/register \
   --require should \
   --reporter spec \
-  --timeout 10000 \
+  --timeout 50000 \
   --slow 300 \
   "$@"
 }
@@ -23,5 +23,3 @@ function run {
 ## Main
 welcome && run \
 test/test.coffee
-
-
