@@ -1,11 +1,9 @@
-# sailor-base
+# sailor-name
 
-[![Build Status](http://img.shields.io/travis/GithubUser/AppName/master.svg?style=flat)](https://travis-ci.org/GithubUser/AppName)
-[![Coverage Status](http://img.shields.io/coveralls/GithubUser/AppName/master.svg?style=flat)](https://coveralls.io/r/GithubUser/AppName?branch=master)
-[![Dependency status](http://img.shields.io/david/GithubUser/AppName.svg?style=flat)](https://david-dm.org/GithubUser/AppName)
-[![Dev Dependencies Status](http://img.shields.io/david/dev/GithubUser/AppName.svg?style=flat)](https://david-dm.org/GithubUser/AppName#info=devDependencies)
-[![NPM Status](http://img.shields.io/npm/dm/AppName.svg?style=flat)](https://www.npmjs.org/package/AppName)
-[![Gittip](http://img.shields.io/gittip/GithubUser.svg?style=flat)](https://www.gittip.com/GithubUser/)
+[![Build Status](https://secure.travis-ci.org/sailorjs/sailor-module-lastfm.png?branch=master)](https://travis-ci.org/sailorjs/sailor-module-lastfm)
+[![Dependency status](https://david-dm.org/sailorjs/sailor-module-lastfm.svg)](https://david-dm.org/sailorjs/sailor-module-lastfm)
+[![devDependency Status](https://david-dm.org/sailorjs/sailor-module-lastfm/dev-status.svg)](https://david-dm.org/sailorjs/sailor-module-lastfm#info=devDependencies)
+[![NPM](https://nodei.co/npm/sailor-module-lastfm.png?downloads=true&stars=true)](https://npmjs.org/package/sailor-module-lastfm/)
 
 
 > A new sailor Proyect

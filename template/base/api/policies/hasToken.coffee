@@ -1,34 +1,41 @@
-###
-Dependencies
-###
+## -- Dependencies -------------------------------------------------------------
+
+jwt       = require 'jsonwebtoken'
 sailor    = require 'sailorjs'
-chalk     = require 'sailorjs/node_modules/chalk'
 translate = sailor.translate
 errorify  = sailor.errorify
 
+## -- Exports -------------------------------------------------------------
 
-###
-hasToken Middleware
-
-Check if the request can access to the API endopoin.
-Also check if token param exist and check if the value
-is the correct
-###
 module.exports = (req, res, next) ->
+  token = undefined
+  if req.method is "OPTIONS" and req.headers.hasOwnProperty("access-control-request-headers")
+    hasAuthInAccessControl = !!~req.headers["access-control-request-headers"].split(",").map((header) ->
+      header.trim()
+    ).indexOf("authorization")
+    return next() if hasAuthInAccessControl
 
-  sails  = req._sails
-  token  = req.param 'token'
-  url    = req.baseUrl
+  if req.headers and req.headers.authorization
+    parts = req.headers.authorization.split(" ")
+    if parts.length is 2
+      scheme      = parts[0]
+      credentials = parts[1]
+      token       = credentials  if /^Bearer$/i.test(scheme)
+    else
+      err = msg: translate.get("Token.BadFormat")
+      return res.badRequest(errorify.serialize(err))
+  else
+    err = msg: translate.get("Token.NotFound")
+    return res.badRequest(errorify.serialize(err))
 
-  unless tokenService.validateOrigin(url)
-    err = msg: translate.get("Token.InvalidOrigin")
-    sails.log.debug "Token Middleware :: #{chalk.red('request')} from #{chalk.cyan(url)}"
-    return res.invalid(errorify.serialize(err))
-
-  unless tokenService.validateToken(token)
-    err = msg: translate.get("Token.InvalidKey")
-    sails.log.debug "Token Middleware :: #{chalk.green('request')} and #{chalk.red('token')} from #{chalk.cyan(url)}"
-    return res.invalid(errorify.serialize(err))
-
-  sails.log.debug "Token Middleware :: #{chalk.green('request')} and #{chalk.green('token')} from #{chalk.cyan(url)}"
-  next()
+  JWTService.decode token, (err, decoded) ->
+    if (err)
+      if err.name is 'TokenExpiredError'
+        error = msg: translate.get("Token.Expired")
+        return res.badRequest(errorify.serialize(error))
+      else
+        ## TODO: Translate
+        return res.badRequest(errorify.serialize(err))
+    else
+      req.user = decoded
+      next()

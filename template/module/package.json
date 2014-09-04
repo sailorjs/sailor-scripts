@@ -1,5 +1,5 @@
 {
-  "name": "sailor-sailor-module-base",
+  "name": "sailor-module-name",
   "description": "New module for Sailor",
   "version": "0.0.0",
   "author": {
@@ -30,7 +30,7 @@
   ],
   "license": "MIT",
   "main": "",
-  "repository": "Kikobeats/sailor-sailor-module-base",
+  "repository": "Kikobeats/sailor-module-name",
   "scripts": {
     "test": "sh test/test.sh",
     "prepublish": "npm prune"

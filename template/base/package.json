@@ -1,5 +1,5 @@
 {
-  "name": "sailor",
+  "name": "sailor-name",
   "description": "A new sailor Proyect",
   "version": "0.0.0",
   "dependencies": {
@@ -17,7 +17,7 @@
     "grunt-sync": "*",
     "grunt-translate-compile": "git://github.com/Kikobeats/translate-compile",
     "include-all": "*",
-    "jwt-simple": "*",
+    "jsonwebtoken": "*",
     "rc": "*",
     "sailorjs": "git://github.com/sailorjs/sailorjs",
     "sails-disk": "*"
@@ -34,7 +34,7 @@
   ],
   "license": "MIT",
   "main": "",
-  "repository": "",
+  "repository": "Kikobeats/sailor-name",
   "scripts": {
     "test": "sh test/test.sh",
     "prepublish": "npm prune"
