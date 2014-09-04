@@ -8,8 +8,8 @@
     "url": "https://github.com/Kikobeats"
   },
   "dependencies": {
-    "chalk"  : "*",
     "args-js": "*",
+    "chalk": "*",
     "coffee-script": "*",
     "execSync": "*",
     "fs-extra": "*",
@@ -24,7 +24,10 @@
   },
   "engines": {},
   "homepage": "",
-  "keywords": ["sailor", "sails"],
+  "keywords": [
+    "sailor",
+    "sails"
+  ],
   "license": "MIT",
   "main": "",
   "repository": "sailorjs/sailor-scripts",
