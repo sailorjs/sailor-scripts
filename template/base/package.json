@@ -1,6 +1,6 @@
 {
-  "name": "sailor-name",
-  "description": "A new sailor Proyect",
+  "name": "<%= name %>",
+  "description": "A new Sailor Proyect",
   "version": "0.0.0",
   "dependencies": {
     "grunt": "*",
@@ -34,9 +34,11 @@
   ],
   "license": "MIT",
   "main": "",
-  "repository": "Kikobeats/sailor-name",
+  "repository" : {
+    "type" : "git",
+    "url"  : "http://github.com/<%= organization %>/<%= name %>.git"
+  },
   "scripts": {
-    "test": "sh test/test.sh",
-    "prepublish": "npm prune"
+    "test": "sh test/test.sh"
   }
 }

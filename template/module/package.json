@@ -1,6 +1,6 @@
 {
-  "name": "sailor-module-name",
-  "description": "New module for Sailor",
+  "name": "<%= name %>",
+  "description": "A new module for Sailor",
   "version": "0.0.0",
   "author": {
     "name": "Kiko Beats",
@@ -30,9 +30,11 @@
   ],
   "license": "MIT",
   "main": "",
-  "repository": "Kikobeats/sailor-module-name",
+  "repository" : {
+    "type" : "git",
+    "url"  : "http://github.com/<%= organization %>/<%= name %>.git"
+  },
   "scripts": {
-    "test": "sh test/test.sh",
-    "prepublish": "npm prune"
+    "test": "sh test/test.sh"
   }
 }

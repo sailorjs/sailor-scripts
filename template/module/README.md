@@ -1,11 +1,11 @@
-# sailor-module-name
+# <%= name %> 
 
-[![Build Status](https://secure.travis-ci.org/Kikobeats/sailor-sailor-module-base.png?branch=master)](https://travis-ci.org/Kikobeats/sailor-sailor-module-base)
-[![Dependency status](https://david-dm.org/Kikobeats/sailor-sailor-module-base.svg)](https://david-dm.org/Kikobeats/sailor-sailor-module-base)
-[![devDependency Status](https://david-dm.org/Kikobeats/sailor-sailor-module-base/dev-status.svg)](https://david-dm.org/Kikobeats/sailor-sailor-module-base#info=devDependencies)
-[![NPM](https://nodei.co/npm/sailor-sailor-module-base.png?downloads=true&stars=true)](https://npmjs.org/package/sailor-sailor-module-base/)
+[![Build Status](http://img.shields.io/travis/<%= organization %>/<%= repository %>/master.svg?style=flat)](https://travis-ci.org/<%= organization %>/<%= repository %>)
+[![Dependency status](http://img.shields.io/david/<%= organization %>/<%= repository %>.svg?style=flat)](https://david-dm.org/<%= organization %>/<%= repository %>)
+[![Dev Dependencies Status](http://img.shields.io/david/dev/<%= organization %>/<%= repository %>.svg?style=flat)](https://david-dm.org/<%= organization %>/<%= repository %>#info=devDependencies)
+[![NPM Status](http://img.shields.io/npm/dm/<%= repository %>.svg?style=flat)](https://www.npmjs.org/package/<%= repository %>)
 
-> New module for Sailor
+> A new module for Sailor
 
 ## Install
 
@@ -15,6 +15,6 @@
 
 ## License
 
-MIT © [Kiko Beats](http://www.kikobeats.com)
+MIT © <%= organization %>
 
 

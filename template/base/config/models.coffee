@@ -24,4 +24,4 @@ tables/collections/etc. in your schema.                                  *
 See http://sailsjs.org/#/documentation/concepts/ORM/model-settings.html  *
 ###
 
-migrate: 'safe'
+migrate: 'drop'

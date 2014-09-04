@@ -14,17 +14,22 @@ _ioClient = require('./sails.io')(require('socket.io-client'))
 
 # -- GLOBALS ------------------------------------------------------------------
 
-DEFAULT_BASE       = 'testApp'
-DEFAULT_MODULE     = 'sailor-module-test'
-DEFAULT_BASE_PATH  = path.join(process.cwd(), "/#{DEFAULT_BASE}")
-TEMPLATE_BASE      = path.join(__dirname, '../template/base')
-TEMPLATE_MODULE    = path.join(__dirname, '../template/module')
-NO_MESSAGE         = ">/dev/null 2>/dev/null"
-
 SCOPE =
   SAILS  : null
   SAILOR : null
   APP    : null
+
+DEFAULT = {}
+DEFAULT.NAME          = 'testApp'
+DEFAULT.ORGANIZATION  = 'sailorjs'
+DEFAULT.PATH = path.join(process.cwd(), "/#{DEFAULT.NAME}")
+
+TEMPLATE =
+  BASE  : path.join(__dirname, '../template/base')
+  MODULE: path.join(__dirname, '../template/module')
+  FILES : ["README.md", "package.json"]
+
+NO_MESSAGE = ">/dev/null 2>/dev/null"
 
 # -- PUBLIC ------------------------------------------------------------------
 
@@ -87,7 +92,7 @@ class AppHelper
   @writePluginFile: (source, dir, done) ->
     args = Args([
       {src:  Args.STRING   | Args.Required}
-      {dir : Args.STRING   | Args.Optional, _default: "#{DEFAULT_BASE_PATH}/config/plugins.coffee"}
+      {dir : Args.STRING   | Args.Optional, _default: "#{DEFAULT.PATH}/config/plugins.coffee"}
       {done: Args.FUNCTION | Args.Optional, _default: undefined}
     ], arguments)
 
@@ -100,19 +105,30 @@ class AppHelper
 
   ###
    * Generate a new base proyect
-   * @param  {String}   name Optional name
-   * @param  {String}   dir  Optional path
-   * @param  {Function} done Optional Callback
+   * @param  {String}   name         Optional name
+   * @param  {String}   organization Optional organization
+   * @param  {String}   repository   Optional repository
+   * @param  {String}   dir          Optional path
+   * @param  {Function} done         Optional Callback
   ###
-  @newBase: (name, dir, options, done) =>
+  @newBase: (name, organization, repository, dir, options, done) =>
     args = Args([
-      {name: Args.STRING   | Args.Optional, _default: DEFAULT_BASE}
-      {dir : Args.STRING   | Args.Optional, _default: "#{process.cwd()}"}
-      {done: Args.FUNCTION | Args.Optional, _default: undefined}
+      {name         : Args.STRING   | Args.Optional, _default: DEFAULT.NAME}
+      {organization : Args.STRING   | Args.Optional, _default: DEFAULT.ORGANIZATION}
+      {repository   : Args.STRING   | Args.Optional, _default: name}
+      {dir          : Args.STRING   | Args.Optional, _default: "#{process.cwd()}"}
+      {done         : Args.FUNCTION | Args.Optional, _default: undefined}
     ], arguments)
 
     SCOPE.APP    = "#{args.dir}/#{args.name}"
-    wrench.copyDirSyncRecursive TEMPLATE_BASE, SCOPE.APP, forceDelete: true
+    wrench.copyDirSyncRecursive TEMPLATE.BASE, SCOPE.APP, forceDelete: true
+
+    options =
+      name         : args.name
+      organization : args.organization
+      repository   : args.repository
+
+    @_copyTemplate template, options for template in TEMPLATE.FILES
 
     appJSON  = require("#{SCOPE.APP}/package.json")
     delete appJSON.dependencies?.sailorjs
@@ -124,22 +140,30 @@ class AppHelper
     @_copyDependencies(appJSON, args.done)
 
 
-
   ###
    * Generate a new module for a proyect
    * @param  {String}   name name
    * @param  {String}   dir  Optional path
    * @param  {Function} done Optional Callback
   ###
-  @newModule: (name, dir, done) =>
+  @newModule: (name, organization, repository, dir, done) =>
     args = Args([
-      {name: Args.STRING   | Args.Required }
-      {dir : Args.STRING   | Args.Optional, _default: "#{process.cwd()}"}
-      {done: Args.FUNCTION | Args.Optional, _default: undefined}
+      {name         : Args.STRING   | Args.Optional, _default: DEFAULT.NAME}
+      {organization : Args.STRING   | Args.Optional, _default: DEFAULT.ORGANIZATION}
+      {repository   : Args.STRING   | Args.Optional, _default: name}
+      {dir          : Args.STRING   | Args.Optional, _default: "#{process.cwd()}"}
+      {done         : Args.FUNCTION | Args.Optional, _default: undefined}
     ], arguments)
 
     SCOPE.APP    = "#{args.dir}/#{args.name}"
-    wrench.copyDirSyncRecursive TEMPLATE_MODULE, SCOPE.APP, forceDelete: true
+    wrench.copyDirSyncRecursive TEMPLATE.MODULE, SCOPE.APP, forceDelete: true
+
+    options =
+      name         : args.name
+      organization : args.organization
+      repository   : args.repository
+
+    @_copyTemplate template, options for template in TEMPLATE.FILES
 
     appJSON  = require("#{SCOPE.APP}/package.json")
     delete appJSON.dependencies?.sailorjs
@@ -159,7 +183,7 @@ class AppHelper
   ###
   @clean: (dir, done) ->
     args = Args([
-      {dir : Args.STRING   | Args.Optional, _default: "#{process.cwd()}/#{DEFAULT_BASE}"}
+      {dir : Args.STRING   | Args.Optional, _default: "#{process.cwd()}/#{DEFAULT.NAME}"}
       {done: Args.FUNCTION | Args.Optional, _default: undefined}
     ], arguments)
 
@@ -176,12 +200,13 @@ class AppHelper
   @lift: (dir, options, done) =>
     delete process.env.NODE_ENV
     args = Args([
-      {dir:     Args.STRING   | Args.Optional, _default: DEFAULT_BASE}
+      {dir:     Args.STRING   | Args.Optional, _default: process.cwd()}
       {options: Args.OBJECT   | Args.Optional, _default: {}}
       {done:    Args.FUNCTION | Args.Optional, _default: undefined}
     ], arguments)
 
     @_changePath args.dir
+
 
     Sails().lift args.options, (err, sails) ->
       if args.done?
@@ -257,21 +282,17 @@ class AppHelper
       cb?()
 
   ###
-   * Run Sails 'new' command
-   * @param  {[type]}   dir  Optional directory
-   * @param  {Function} done Optional Callback
+  Process a template file and copy it on the destinity
   ###
-  @_sailsNew: (dir, done) ->
-    args = Args([
-      {dir:     Args.STRING   | Args.Optional, _default: DEFAULT_BASE}
-      {done:    Args.FUNCTION | Args.Optional, _default: undefined}
-    ], arguments)
-
-    @clean(args.dir)
-    exec sailsBin + " new " + DEFAULT_BASE, (err) ->
-      if args.done?
-        return args.done(err)  if err
-        args.done()
+  @_copyTemplate: (fileName, options) ->
+    absTemplatePath = path.resolve(SCOPE.APP, fileName)
+    contents = fs.readFileSync absTemplatePath, "utf8"
+    contents = _.template(contents, options)
+    # With lodash teplates, HTML entities are escaped by default.
+    # Default assumption is we DON'T want that, so we'll reverse it.
+    contents = _.unescape(contents)  unless options.escapeHTMLEntities
+    # copy the content of the variable into file
+    fs.outputFileSync(absTemplatePath, contents)
 
 # -- EXPORTS ------------------------------------------------------------------
 

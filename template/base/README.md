@@ -1,12 +1,11 @@
-# sailor-name
+# <%= name %> 
 
-[![Build Status](https://secure.travis-ci.org/sailorjs/sailor-module-lastfm.png?branch=master)](https://travis-ci.org/sailorjs/sailor-module-lastfm)
-[![Dependency status](https://david-dm.org/sailorjs/sailor-module-lastfm.svg)](https://david-dm.org/sailorjs/sailor-module-lastfm)
-[![devDependency Status](https://david-dm.org/sailorjs/sailor-module-lastfm/dev-status.svg)](https://david-dm.org/sailorjs/sailor-module-lastfm#info=devDependencies)
-[![NPM](https://nodei.co/npm/sailor-module-lastfm.png?downloads=true&stars=true)](https://npmjs.org/package/sailor-module-lastfm/)
+[![Build Status](http://img.shields.io/travis/<%= organization %>/<%= repository %>/master.svg?style=flat)](https://travis-ci.org/<%= organization %>/<%= repository %>)
+[![Dependency status](http://img.shields.io/david/<%= organization %>/<%= repository %>.svg?style=flat)](https://david-dm.org/<%= organization %>/<%= repository %>)
+[![Dev Dependencies Status](http://img.shields.io/david/dev/<%= organization %>/<%= repository %>.svg?style=flat)](https://david-dm.org/<%= organization %>/<%= repository %>#info=devDependencies)
+[![NPM Status](http://img.shields.io/npm/dm/<%= repository %>.svg?style=flat)](https://www.npmjs.org/package/<%= repository %>)
 
-
-> A new sailor Proyect
+> A new Sailor Proyect
 
 ## Install
 
@@ -16,6 +15,6 @@
 
 ## License
 
-MIT © [Kiko Beats](http://www.kikobeats.com)
+MIT © <%= organization %>
 
 
