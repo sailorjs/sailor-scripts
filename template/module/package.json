@@ -7,10 +7,15 @@
     "email": "josefrancisco.verdu@gmail.com",
     "url": "https://github.com/Kikobeats"
   },
-  "dependencies": {},
+  "dependencies": {
+    "sailor-errorify": "git://github.com/sailorjs/sailor-errorify",
+    "sailor-translate": "git://github.com/sailorjs/sailor-translate",
+    "sailor-validator": "git://github.com/sailorjs/sailor-validator"
+    },
   "devDependencies": {
     "grunt": "*",
     "grunt-contrib-watch": "*",
+    "load-grunt-tasks": "*",
     "mocha": "*",
     "should": "*",
     "superagent": "*",
