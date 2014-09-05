@@ -21,9 +21,9 @@ SCOPE =
   APP    : null
 
 OPTIONS =
-  NAME         : 'testApp'
-  ORGANIZATION : 'sailorjs'
-  REPOSITORY   : 'testApp'
+  name         : 'testApp'
+  organization : 'sailorjs'
+  repository   : 'testApp'
 
 TEMPLATE =
   BASE  : path.join(__dirname, '../template/base')
@@ -75,7 +75,7 @@ class AppHelper
    *   - name
    *   - organization
    *   - repository
-   * @param  {Function} cb      Optional Callback
+   * @param  {Function} cb    Optional Callback
   ###
   @newBase: (dir, options, cb) =>
     args = Args([
@@ -95,40 +95,31 @@ class AppHelper
     SCOPE.SAILS  = @_resolvePath 'sails'
     SCOPE.SAILOR = @_resolvePath 'sailor'
 
-    console.log SCOPE
-
     # search the depndencies in the SCOPE's or download
     @_copyDependencies(appJSON, args.cb)
 
 
 
   ###
-   * Generate a new module
+   * Generate a new module for a project
    * @param  {String} dir     Optional path
    * @param  {Object} options Optional options, like:
    *   - name
    *   - organization
    *   - repository
-   * @param  {Function} cb      Optional Callback
+   * @param  {Function} cb    Optional Callback
   ###
   @newModule: (dir, options, cb) =>
     args = Args([
-      {name         : Args.STRING   | Args.Optional, _default: OPTIONS.NAME}
-      {organization : Args.STRING   | Args.Optional, _default: OPTIONS.ORGANIZATION}
-      {repository   : Args.STRING   | Args.Optional, _default: name}
-      {dir          : Args.STRING   | Args.Optional, _default: "#{process.cwd()}"}
-      {done         : Args.FUNCTION | Args.Optional, _default: undefined}
+      {dir          : Args.STRING   | Args.Optional, _default: "#{process.cwd()}" }
+      {options      : Args.OBJECT   | Args.Optional, _default: OPTIONS            }
+      {cb           : Args.FUNCTION | Args.Optional, _default: undefined          }
     ], arguments)
 
-    SCOPE.APP    = "#{args.dir}/#{args.name}"
+    SCOPE.APP    = "#{args.dir}/#{args.options.name}"
     wrench.copyDirSyncRecursive TEMPLATE.MODULE, SCOPE.APP, forceDelete: true
 
-    options =
-      name         : args.name
-      organization : args.organization
-      repository   : args.repository
-
-    @_copyTemplate template, options for template in TEMPLATE.FILES
+    @_copyTemplate template, args.options for template in TEMPLATE.FILES
 
     appJSON  = require("#{SCOPE.APP}/package.json")
     delete appJSON.dependencies?.sailorjs
@@ -136,8 +127,8 @@ class AppHelper
     SCOPE.SAILS  = @_resolvePath 'sails'
     SCOPE.SAILOR = @_resolvePath 'sailor'
 
-    # search the dependency in sails or sailor and linkin in the folder of the project
-    @_copyDependencies(appJSON, args.done)
+    # search the depndencies in the SCOPE's or download
+    @_copyDependencies(appJSON, args.cb)
 
 
 
@@ -166,7 +157,7 @@ class AppHelper
   @writePluginFile: (source, dir, done) ->
     args = Args([
       {src:  Args.STRING   | Args.Required}
-      {dir : Args.STRING   | Args.Optional, _default: path.join(process.cwd(), "/#{OPTIONS.NAME}/config/plugins.coffee")}
+      {dir : Args.STRING   | Args.Optional, _default: path.join(process.cwd(), "/#{OPTIONS.name}/config/plugins.coffee")}
       {done: Args.FUNCTION | Args.Optional, _default: undefined}
     ], arguments)
 
@@ -190,6 +181,7 @@ class AppHelper
 
     wrench.rmdirSyncRecursive args.dir  if fs.existsSync(args.dir)
     args.done?()
+
 
 
   ###
@@ -242,6 +234,7 @@ class AppHelper
     path.join fs.realpathSync(result.stdout), '../..' if fileType.isSymbolicLink()
 
 
+
   ###
   Localize a dependency and return the path
   ###
@@ -281,6 +274,8 @@ class AppHelper
     sailorLocal = path.resolve(SCOPE.APP, 'node_modules', 'sailorjs')
     fs.symlink SCOPE.SAILOR, sailorLocal, "junction", (symLinkErr) ->
       cb?()
+
+
 
   ###
   Process a template file and copy it on the destinity
