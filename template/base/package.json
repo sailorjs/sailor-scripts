@@ -3,6 +3,8 @@
   "description": "A new Sailor Proyect",
   "version": "0.0.0",
   "dependencies": {
+    "sailorjs": "git://github.com/sailorjs/sailorjs",
+    "coffee-script": "*",
     "grunt": "*",
     "grunt-contrib-clean": "*",
     "grunt-contrib-coffee": "*",
@@ -15,11 +17,10 @@
     "grunt-contrib-watch": "*",
     "grunt-sails-linker": "*",
     "grunt-sync": "*",
-    "grunt-translate-compile": "git://github.com/Kikobeats/translate-compile",
+    "grunt-translate-compile": "git://github.com/sailorjs/translate-compile",
     "include-all": "*",
     "jsonwebtoken": "*",
     "rc": "*",
-    "sailorjs": "git://github.com/sailorjs/sailorjs",
     "sails-disk": "*"
   },
   "devDependencies": {

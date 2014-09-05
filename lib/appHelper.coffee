@@ -22,8 +22,8 @@ SCOPE =
 
 OPTIONS =
   name         : 'testApp'
-  organization : 'sailorjs'
   repository   : 'testApp'
+  organization : 'sailorjs'
 
 TEMPLATE =
   BASE  : path.join(__dirname, '../template/base')
@@ -95,7 +95,6 @@ class AppHelper
     SCOPE.SAILS  = @_resolvePath 'sails'
     SCOPE.SAILOR = @_resolvePath 'sailor'
 
-    # search the depndencies in the SCOPE's or download
     @_copyDependencies(appJSON, args.cb)
 
 
@@ -218,14 +217,12 @@ class AppHelper
 
 
   @_resolvePath: (name) ->
-    # first try to resolve the dependency locally
+    # first try to resolve the dependency locally of this package
     return "#{localDependecies}/#{name}" if fs.existsSync("#{localDependecies}/#{name}")
 
     # second, try to resolve in global mode
     result = @execute "which #{name}"
     return null if result.code isnt 0
-
-    result = @execute "which #{name}"
 
     if result.stdout[result.stdout.length-1] is '\n'
       result.stdout = result.stdout.substring(0, result.stdout.length - 1)
@@ -251,7 +248,7 @@ class AppHelper
 
 
   ###
-  For each Dependency localize the source module path and create
+  For each dependency localize the source module path and create
   a symlink in the folder of the project
   ###
   @_copyDependencies = (pkg, cb) =>
@@ -259,6 +256,12 @@ class AppHelper
     moduleNames     = _.union(Object.keys(pkg.devDependencies), Object.keys(pkg.dependencies))
     appDependencies = path.resolve SCOPE.APP, 'node_modules'
     fs.mkdirsSync appDependencies
+
+    # ensure that SCOPE.SAILOR exists
+    unless SCOPE.SAILOR?
+      console.log "#{chalk.blue('info')}   : Dependency 'sailorjs' doesn't found. Installing..."
+      @run "cd #{appDependencies} && npm install sailorjs"
+      SCOPE.SAILOR = path.resolve appDependencies, 'sailorjs'
 
     for moduleName in moduleNames
       try
@@ -270,10 +273,12 @@ class AppHelper
         console.log "#{chalk.blue('info')}   : Dependency '#{moduleName}' doesn't found. Installing..."
         @run "cd #{appDependencies} && npm install #{moduleName}"
 
-    # Finally link sailor
+    # Finally link sailor if is necessary
     sailorLocal = path.resolve(SCOPE.APP, 'node_modules', 'sailorjs')
-    fs.symlink SCOPE.SAILOR, sailorLocal, "junction", (symLinkErr) ->
-      cb?()
+    if fs.lstatSync(SCOPE.SAILOR).isSymbolicLink() and !fs.existsSync sailorLocal
+      fs.symlinkSync SCOPE.SAILOR, sailorLocal, "junction"
+
+    cb?()
 
 
 
