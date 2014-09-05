@@ -1,16 +1,17 @@
 # -- DEPENDENCIES --------------------------------------------------------------
 
-Args      = require 'args-js'
-fs        = require 'fs-extra'
-wrench    = require 'wrench'
-path      = require 'path'
-chalk     = require 'chalk'
-sh        = require 'execSync'
-_         = require 'lodash'
-Sails     = require 'sails/lib/app'
-sailsBin  = path.join __dirname, '../node_modules/sails/bin/sails.js'
-sailsLift = require 'sails/bin/sails-lift'
-_ioClient = require('./sails.io')(require('socket.io-client'))
+Args             = require 'args-js'
+fs               = require 'fs-extra'
+wrench           = require 'wrench'
+path             = require 'path'
+chalk            = require 'chalk'
+sh               = require 'execSync'
+_                = require 'lodash'
+localDependecies = path.join __dirname, '../node_modules'
+sailsBin         = path.join localDependecies, 'sails/bin/sails.js'
+Sails            = require (path.join localDependecies, 'sails/lib/app')
+sailsLift        = require (path.join localDependecies, 'sails/bin/sails-lift')
+_ioClient        = require('./sails.io')(require('socket.io-client'))
 
 # -- GLOBALS ------------------------------------------------------------------
 
@@ -19,10 +20,10 @@ SCOPE =
   SAILOR : null
   APP    : null
 
-DEFAULT = {}
-DEFAULT.NAME          = 'testApp'
-DEFAULT.ORGANIZATION  = 'sailorjs'
-DEFAULT.PATH = path.join(process.cwd(), "/#{DEFAULT.NAME}")
+OPTIONS =
+  NAME         : 'testApp'
+  ORGANIZATION : 'sailorjs'
+  REPOSITORY   : 'testApp'
 
 TEMPLATE =
   BASE  : path.join(__dirname, '../template/base')
@@ -68,67 +69,25 @@ class AppHelper
 
 
   ###
-   * Create a symbolic link
-   * @param  {String}   orig Origin path
-   * @param  {String}   dist Destination path
-   * @param  {Function} done Optional Callback
-  ###
-  @link: (orig, dist, done) =>
-    args = Args([
-      {orig: Args.STRING   | Args.Required}
-      {dist: Args.STRING   | Args.Required}
-      {done: Args.FUNCTION | Args.Optional, _default: undefined}
-    ], arguments)
-
-    fs.symlink args.orig, args.dist, -> args.done?()
-
-
-
-  ###
-   * Write in the plugin file in config/plugins
-   * @param  {String}   source Rext to write
-   * @param  {Function} done   Optional callback
-  ###
-  @writePluginFile: (source, dir, done) ->
-    args = Args([
-      {src:  Args.STRING   | Args.Required}
-      {dir : Args.STRING   | Args.Optional, _default: "#{DEFAULT.PATH}/config/plugins.coffee"}
-      {done: Args.FUNCTION | Args.Optional, _default: undefined}
-    ], arguments)
-
-    if fs.existsSync args.dir
-      fs.writeFileSync args.dir, "module.exports.plugins = [" + JSON.stringify(args.src) + "]"
-
-    args.done?()
-
-
-
-  ###
    * Generate a new base proyect
-   * @param  {String}   name         Optional name
-   * @param  {String}   organization Optional organization
-   * @param  {String}   repository   Optional repository
-   * @param  {String}   dir          Optional path
-   * @param  {Function} done         Optional Callback
+   * @param  {String} dir     Optional path
+   * @param  {Object} options Optional options, like:
+   *   - name
+   *   - organization
+   *   - repository
+   * @param  {Function} cb      Optional Callback
   ###
-  @newBase: (name, organization, repository, dir, options, done) =>
+  @newBase: (dir, options, cb) =>
     args = Args([
-      {name         : Args.STRING   | Args.Optional, _default: DEFAULT.NAME}
-      {organization : Args.STRING   | Args.Optional, _default: DEFAULT.ORGANIZATION}
-      {repository   : Args.STRING   | Args.Optional, _default: name}
-      {dir          : Args.STRING   | Args.Optional, _default: "#{process.cwd()}"}
-      {done         : Args.FUNCTION | Args.Optional, _default: undefined}
+      {dir          : Args.STRING   | Args.Optional, _default: "#{process.cwd()}" }
+      {options      : Args.OBJECT   | Args.Optional, _default: OPTIONS            }
+      {cb           : Args.FUNCTION | Args.Optional, _default: undefined          }
     ], arguments)
 
-    SCOPE.APP    = "#{args.dir}/#{args.name}"
+    SCOPE.APP    = "#{args.dir}/#{args.options.name}"
     wrench.copyDirSyncRecursive TEMPLATE.BASE, SCOPE.APP, forceDelete: true
 
-    options =
-      name         : args.name
-      organization : args.organization
-      repository   : args.repository
-
-    @_copyTemplate template, options for template in TEMPLATE.FILES
+    @_copyTemplate template, args.options for template in TEMPLATE.FILES
 
     appJSON  = require("#{SCOPE.APP}/package.json")
     delete appJSON.dependencies?.sailorjs
@@ -136,20 +95,26 @@ class AppHelper
     SCOPE.SAILS  = @_resolvePath 'sails'
     SCOPE.SAILOR = @_resolvePath 'sailor'
 
-    # search the dependency in sails or sailor and linkin in the folder of the project
-    @_copyDependencies(appJSON, args.done)
+    console.log SCOPE
+
+    # search the depndencies in the SCOPE's or download
+    @_copyDependencies(appJSON, args.cb)
+
 
 
   ###
-   * Generate a new module for a proyect
-   * @param  {String}   name name
-   * @param  {String}   dir  Optional path
-   * @param  {Function} done Optional Callback
+   * Generate a new module
+   * @param  {String} dir     Optional path
+   * @param  {Object} options Optional options, like:
+   *   - name
+   *   - organization
+   *   - repository
+   * @param  {Function} cb      Optional Callback
   ###
-  @newModule: (name, organization, repository, dir, done) =>
+  @newModule: (dir, options, cb) =>
     args = Args([
-      {name         : Args.STRING   | Args.Optional, _default: DEFAULT.NAME}
-      {organization : Args.STRING   | Args.Optional, _default: DEFAULT.ORGANIZATION}
+      {name         : Args.STRING   | Args.Optional, _default: OPTIONS.NAME}
+      {organization : Args.STRING   | Args.Optional, _default: OPTIONS.ORGANIZATION}
       {repository   : Args.STRING   | Args.Optional, _default: name}
       {dir          : Args.STRING   | Args.Optional, _default: "#{process.cwd()}"}
       {done         : Args.FUNCTION | Args.Optional, _default: undefined}
@@ -177,13 +142,49 @@ class AppHelper
 
 
   ###
+   * Create a symbolic link
+   * @param  {String}   orig Origin path
+   * @param  {String}   dist Destination path
+   * @param  {Function} done Optional Callback
+  ###
+  @link: (orig, dist, done) =>
+    args = Args([
+      {orig: Args.STRING   | Args.Required}
+      {dist: Args.STRING   | Args.Required}
+      {done: Args.FUNCTION | Args.Optional, _default: undefined}
+    ], arguments)
+
+    fs.symlink args.orig, args.dist, -> args.done?()
+
+
+
+  ###
+   * Write in the plugin file in config/plugins
+   * @param  {String}   source Rext to write
+   * @param  {Function} done   Optional callback
+  ###
+  @writePluginFile: (source, dir, done) ->
+    args = Args([
+      {src:  Args.STRING   | Args.Required}
+      {dir : Args.STRING   | Args.Optional, _default: path.join(process.cwd(), "/#{OPTIONS.NAME}/config/plugins.coffee")}
+      {done: Args.FUNCTION | Args.Optional, _default: undefined}
+    ], arguments)
+
+    if fs.existsSync args.dir
+      fs.writeFileSync args.dir, "module.exports.plugins = [" + JSON.stringify(args.src) + "]"
+
+    args.done?()
+
+
+
+  ###
    * Clear a folder
    * @param  {[type]}   dir  Optional directory
    * @param  {Function} done Optional Callback
   ###
   @clean: (dir, done) ->
     args = Args([
-      {dir : Args.STRING   | Args.Optional, _default: "#{process.cwd()}/#{DEFAULT.NAME}"}
+      {dir : Args.STRING   | Args.Optional, _default: "#{process.cwd()}/#{OPTIONS.NAME}"}
       {done: Args.FUNCTION | Args.Optional, _default: undefined}
     ], arguments)
 
@@ -207,7 +208,6 @@ class AppHelper
 
     @_changePath args.dir
 
-
     Sails().lift args.options, (err, sails) ->
       if args.done?
         return args.done(err)  if err
@@ -226,20 +226,20 @@ class AppHelper
 
 
   @_resolvePath: (name) ->
+    # first try to resolve the dependency locally
+    return "#{localDependecies}/#{name}" if fs.existsSync("#{localDependecies}/#{name}")
+
+    # second, try to resolve in global mode
+    result = @execute "which #{name}"
+    return null if result.code isnt 0
+
     result = @execute "which #{name}"
 
     if result.stdout[result.stdout.length-1] is '\n'
       result.stdout = result.stdout.substring(0, result.stdout.length - 1)
 
-    # get the relative path
-    relative_path = result.stdout.split("/")
-    relative_path.splice(relative_path.length-1, 1)
-    relative_path = relative_path.join("/")
-    # get the symlink value
-    link  = fs.readlinkSync result.stdout
-    route = path.resolve relative_path, link
-    route = path.join route, '../..'
-
+    fileType = fs.lstatSync(result.stdout)
+    path.join fs.realpathSync(result.stdout), '../..' if fileType.isSymbolicLink()
 
 
   ###
@@ -262,9 +262,10 @@ class AppHelper
   a symlink in the folder of the project
   ###
   @_copyDependencies = (pkg, cb) =>
-    moduleNames = _.union(Object.keys(pkg.devDependencies), Object.keys(pkg.dependencies))
-    app_node    = path.resolve SCOPE.APP, 'node_modules'
-    fs.mkdirsSync app_node
+    # get the names of the dependencies
+    moduleNames     = _.union(Object.keys(pkg.devDependencies), Object.keys(pkg.dependencies))
+    appDependencies = path.resolve SCOPE.APP, 'node_modules'
+    fs.mkdirsSync appDependencies
 
     for moduleName in moduleNames
       try
@@ -274,7 +275,7 @@ class AppHelper
 
       catch e
         console.log "#{chalk.blue('info')}   : Dependency '#{moduleName}' doesn't found. Installing..."
-        @run "cd #{app_node} && npm install #{moduleName}"
+        @run "cd #{appDependencies} && npm install #{moduleName}"
 
     # Finally link sailor
     sailorLocal = path.resolve(SCOPE.APP, 'node_modules', 'sailorjs')
