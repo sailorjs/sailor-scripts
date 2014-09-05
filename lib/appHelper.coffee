@@ -95,6 +95,8 @@ class AppHelper
     SCOPE.SAILS  = @_resolvePath 'sails'
     SCOPE.SAILOR = @_resolvePath 'sailor'
 
+    console.log SCOPE
+
     @_copyDependencies(appJSON, args.cb)
 
 
@@ -275,7 +277,8 @@ class AppHelper
 
     # Finally link sailor if is necessary
     sailorLocal = path.resolve(SCOPE.APP, 'node_modules', 'sailorjs')
-    if fs.lstatSync(SCOPE.SAILOR).isSymbolicLink() and !fs.existsSync sailorLocal
+
+    if !fs.existsSync sailorLocal
       fs.symlinkSync SCOPE.SAILOR, sailorLocal, "junction"
 
     cb?()
