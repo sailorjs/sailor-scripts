@@ -44,7 +44,7 @@ class AppHelper
   ###
   @run: (command, done) ->
     args = Args([
-      {cmd: Args.STRING    | Args.Required}
+      {cmd : Args.STRING   | Args.Required                     }
       {done: Args.FUNCTION | Args.Optional, _default: undefined}
     ], arguments)
 
@@ -58,9 +58,9 @@ class AppHelper
    * @param  {String} command Command to execute
    * @param  {Function} orig Optional Callback
   ###
-  @execute: (command, done) ->
+  @exec: (command, done) ->
     args = Args([
-      {cmd: Args.STRING    | Args.Required}
+      {cmd : Args.STRING   | Args.Required                     }
       {done: Args.FUNCTION | Args.Optional, _default: undefined}
     ], arguments)
 
@@ -80,9 +80,9 @@ class AppHelper
   ###
   @newBase: (dir, options, cb) =>
     args = Args([
-      {dir          : Args.STRING   | Args.Optional, _default: "#{process.cwd()}" }
-      {options      : Args.OBJECT   | Args.Optional, _default: OPTIONS            }
-      {cb           : Args.FUNCTION | Args.Optional, _default: undefined          }
+      {dir    : Args.STRING   | Args.Optional, _default: "#{process.cwd()}"}
+      {options: Args.OBJECT   | Args.Optional, _default: OPTIONS           }
+      {cb     : Args.FUNCTION | Args.Optional, _default: undefined         }
     ], arguments)
     @_newTemplate(args.dir, args.options, TEMPLATE.BASE, args.cb)
 
@@ -99,9 +99,9 @@ class AppHelper
   ###
   @newModule: (dir, options, cb) =>
     args = Args([
-      {dir          : Args.STRING   | Args.Optional, _default: "#{process.cwd()}" }
-      {options      : Args.OBJECT   | Args.Optional, _default: OPTIONS            }
-      {cb           : Args.FUNCTION | Args.Optional, _default: undefined          }
+      {dir    : Args.STRING   | Args.Optional, _default: "#{process.cwd()}"}
+      {options: Args.OBJECT   | Args.Optional, _default: OPTIONS           }
+      {cb     : Args.FUNCTION | Args.Optional, _default: undefined         }
     ], arguments)
     @_newTemplate(args.dir, args.options, TEMPLATE.MODULE, args.cb)
 
@@ -115,8 +115,8 @@ class AppHelper
   ###
   @link: (orig, dist, done) =>
     args = Args([
-      {orig: Args.STRING   | Args.Required}
-      {dist: Args.STRING   | Args.Required}
+      {orig: Args.STRING   | Args.Required                     }
+      {dist: Args.STRING   | Args.Required                     }
       {done: Args.FUNCTION | Args.Optional, _default: undefined}
     ], arguments)
 
@@ -129,15 +129,17 @@ class AppHelper
    * @param  {String}   source Rext to write
    * @param  {Function} done   Optional callback
   ###
-  @writePluginFile: (source, dir, done) ->
+  @writePluginFile: (source, baseName, done) ->
     args = Args([
-      {src:  Args.STRING   | Args.Required}
-      {dir : Args.STRING   | Args.Optional, _default: path.join(process.cwd(), "/#{OPTIONS.name}/config/plugins.coffee")}
-      {done: Args.FUNCTION | Args.Optional, _default: undefined}
+      {src     :  Args.STRING  | Args.Required                        }
+      {baseName: Args.STRING   | Args.Optional, _default: OPTIONS.name}
+      {done    : Args.FUNCTION | Args.Optional, _default: undefined   }
     ], arguments)
 
-    if fs.existsSync args.dir
-      fs.writeFileSync args.dir, "module.exports.plugins = [" + JSON.stringify(args.src) + "]"
+    configFile = path.join(process.cwd(), "/#{args.baseName}/config/plugins.coffee")
+
+    if fs.existsSync configFile
+      fs.writeFileSync configFile, "module.exports.plugins = [" + JSON.stringify(args.src) + "]"
 
     args.done?()
 
@@ -151,7 +153,7 @@ class AppHelper
   @clean: (dir, done) ->
     args = Args([
       {dir : Args.STRING   | Args.Optional, _default: "#{process.cwd()}/#{OPTIONS.NAME}"}
-      {done: Args.FUNCTION | Args.Optional, _default: undefined}
+      {done: Args.FUNCTION | Args.Optional, _default: undefined                         }
     ], arguments)
 
     wrench.rmdirSyncRecursive args.dir  if fs.existsSync(args.dir)
@@ -168,9 +170,9 @@ class AppHelper
   @lift: (dir, options, done) =>
     delete process.env.NODE_ENV
     args = Args([
-      {dir:     Args.STRING   | Args.Optional, _default: process.cwd()}
-      {options: Args.OBJECT   | Args.Optional, _default: {}}
-      {done:    Args.FUNCTION | Args.Optional, _default: undefined}
+      {dir    : Args.STRING   | Args.Optional, _default: process.cwd()}
+      {options: Args.OBJECT   | Args.Optional, _default: {}           }
+      {done   : Args.FUNCTION | Args.Optional, _default: undefined    }
     ], arguments)
 
     @_changePath args.dir
@@ -183,6 +185,9 @@ class AppHelper
 
   # -- PRIVATE ------------------------------------------------------------------
 
+  ###
+  Change the process path
+  ###
   @_changePath: (dir) ->
     args = Args([
       {dir: Args.STRING | Args.Required}
@@ -191,13 +196,15 @@ class AppHelper
     process.chdir args.dir
 
 
-
+  ###
+  Find the path of a dependency
+  ###
   @_resolvePath: (name) ->
     # first try to resolve the dependency locally of this package
     return "#{localDependecies}/#{name}" if fs.existsSync("#{localDependecies}/#{name}")
 
     # second, try to resolve in global mode
-    result = @execute "which #{name}"
+    result = @exec "which #{name}"
     return null if result.code isnt 0
 
     if result.stdout[result.stdout.length-1] is '\n'
@@ -272,7 +279,9 @@ class AppHelper
     # copy the content of the variable into file
     fs.outputFileSync(destPath, contents)
 
-
+  ###
+  Generate the scaffold base on a template
+  ###
   @_newTemplate: (dir, options, templatePath, cb) =>
     SCOPE.APP    = "#{dir}/#{options.name}"
     wrench.copyDirSyncRecursive templatePath, SCOPE.APP,
