@@ -29,6 +29,7 @@ TEMPLATE =
   BASE  : path.join(__dirname, '../template/base')
   MODULE: path.join(__dirname, '../template/module')
   FILES : ["README.md", "package.json"]
+  REGEX : /(README\.md)|(package\.json)/g
 
 NO_MESSAGE = ">/dev/null 2>/dev/null"
 
@@ -84,20 +85,7 @@ class AppHelper
       {cb           : Args.FUNCTION | Args.Optional, _default: undefined          }
     ], arguments)
 
-    SCOPE.APP    = "#{args.dir}/#{args.options.name}"
-    wrench.copyDirSyncRecursive TEMPLATE.BASE, SCOPE.APP, forceDelete: true
-
-    @_copyTemplate template, args.options for template in TEMPLATE.FILES
-
-    appJSON  = require("#{SCOPE.APP}/package.json")
-    delete appJSON.dependencies?.sailorjs
-
-    SCOPE.SAILS  = @_resolvePath 'sails'
-    SCOPE.SAILOR = @_resolvePath 'sailor'
-
-    console.log SCOPE
-
-    @_copyDependencies(appJSON, args.cb)
+    @_newTemplate(args.dir, args.options, TEMPLATE.BASE, args.cb)
 
 
 
@@ -117,19 +105,7 @@ class AppHelper
       {cb           : Args.FUNCTION | Args.Optional, _default: undefined          }
     ], arguments)
 
-    SCOPE.APP    = "#{args.dir}/#{args.options.name}"
-    wrench.copyDirSyncRecursive TEMPLATE.MODULE, SCOPE.APP, forceDelete: true
-
-    @_copyTemplate template, args.options for template in TEMPLATE.FILES
-
-    appJSON  = require("#{SCOPE.APP}/package.json")
-    delete appJSON.dependencies?.sailorjs
-
-    SCOPE.SAILS  = @_resolvePath 'sails'
-    SCOPE.SAILOR = @_resolvePath 'sailor'
-
-    # search the depndencies in the SCOPE's or download
-    @_copyDependencies(appJSON, args.cb)
+    @_newTemplate(args.dir, args.options, TEMPLATE.MODULE, args.cb)
 
 
 
@@ -288,15 +264,33 @@ class AppHelper
   ###
   Process a template file and copy it on the destinity
   ###
-  @_copyTemplate: (fileName, options) ->
-    absTemplatePath = path.resolve(SCOPE.APP, fileName)
-    contents = fs.readFileSync absTemplatePath, "utf8"
+  @_copyTemplate: (srcPath, options) ->
+    destPath = path.resolve(SCOPE.APP, path.basename(srcPath))
+    contents = fs.readFileSync srcPath, "utf8"
     contents = _.template(contents, options)
     # With lodash teplates, HTML entities are escaped by default.
     # Default assumption is we DON'T want that, so we'll reverse it.
     contents = _.unescape(contents)  unless options.escapeHTMLEntities
     # copy the content of the variable into file
-    fs.outputFileSync(absTemplatePath, contents)
+    fs.outputFileSync(destPath, contents)
+
+
+  @_newTemplate: (dir, options, templatePath, cb) =>
+    SCOPE.APP    = "#{dir}/#{options.name}"
+    wrench.copyDirSyncRecursive templatePath, SCOPE.APP,
+      forceDelete: true
+      exclude    : TEMPLATE.REGEX
+
+    @_copyTemplate "#{templatePath}/#{template}", options for template in TEMPLATE.FILES
+
+    appJSON  = require("#{SCOPE.APP}/package.json")
+    delete appJSON.dependencies?.sailorjs
+
+    SCOPE.SAILS  = @_resolvePath 'sails'
+    SCOPE.SAILOR = @_resolvePath 'sailor'
+
+    @_copyDependencies(appJSON, cb)
+
 
 # -- EXPORTS ------------------------------------------------------------------
 
