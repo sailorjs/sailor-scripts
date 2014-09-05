@@ -1,44 +1,79 @@
+## -- Dependencies -------------------------------------------------------------
+
+path      = require 'path'
 fs        = require 'fs-extra'
 should    = require 'should'
 scripts   = require '../'
 
+## -- Setup -------------------------------------------------------------
+
 DIR    = process.cwd()
 APP    = 'testApp'
-MODULE = "sailor-module-test"
+MODULE = 'sailor-module-test'
 
-describe 'Base', ->
-  it 'created a new based proyect without name', ->
-    scripts.newBase ->
-      fs.existsSync("#{DIR}/#{APP}").should.eql true
+options_app =
+  name         : 'testApp'
+  repository   : 'testApp'
+  organization : 'sailorjs'
 
-  it "created a new based proyect called 'testApp'", ->
-    scripts.newBase "testApp", ->
-      fs.existsSync("#{DIR}/#{APP}").should.eql true
+options_module =
+  name         : 'sailor-module-test'
+  repository   : 'sailor-module-test'
+  organization : 'sailorjs'
 
-describe 'Module', ->
-  it 'created a new module for a base proyect', ->
-   scripts.newModule "#{MODULE}", "#{DIR}", ->
-    fs.existsSync("#{DIR}/#{MODULE}").should.eql true
+options_lift =
+  log: level: 'silent'
 
-describe 'Link', ->
-  it 'module in base proyect without error', ->
-    scripts.link "#{DIR}/#{MODULE}", "#{DIR}/#{APP}/node_modules/#{MODULE}", ->
-      fs.existsSync("#{DIR}/#{APP}/node_modules/#{MODULE}").should.eql true
+# afterEach (done) ->
+#   scripts.clean "#{DIR}/#{APP}", done
 
-describe 'writePluginFile', ->
-  it 'module is written in the config file', (done) ->
-    scripts.writePluginFile MODULE, done
+## -- Test -------------------------------------------------------------
 
-describe 'Lift', ->
-  it 'starts sails server', (done) ->
-    opts =
-      log: level: "silent"
-      plugins: [MODULE]
-    scripts.lift "#{DIR}/#{APP}", opts, done
+describe 'Sailor Scripts ::', ->
 
-describe 'Clean a proyect', ->
-  it 'without errors',->
-    scripts.clean "#{DIR}/#{APP}"
-    scripts.clean "#{DIR}/#{MODULE}"
-    fs.existsSync("#{DIR}/#{APP}").should.eql false
-    fs.existsSync("#{DIR}/#{MODULE}").should.eql false
+  describe 'Base', ->
+    it 'create ', (done) ->
+      scripts.newBase ->
+        fs.existsSync("#{DIR}/#{APP}").should.eql true
+        done()
+
+    it 'created specifing the options', (done)->
+      scripts.newBase options_app , ->
+        fs.existsSync("#{DIR}/#{APP}").should.eql true
+        done()
+
+  describe 'Module', ->
+    xit 'created', (done) ->
+      scripts.newModule  ->
+        fs.existsSync("#{DIR}/#{APP}").should.eql true
+        done()
+
+    it 'created specifing the options', (done) ->
+      scripts.newModule options_module, ->
+        fs.existsSync("#{DIR}/#{MODULE}").should.eql true
+        done()
+
+  describe 'Link', ->
+    it 'module in base project', (done) ->
+      scripts.link "#{DIR}/#{MODULE}", "#{DIR}/#{APP}/node_modules/#{MODULE}", ->
+        fs.existsSync("#{DIR}/#{APP}/node_modules/#{MODULE}").should.eql true
+        done()
+
+  describe 'writePluginFile', ->
+    it 'the name of the plugin in the config file', (done) ->
+      scripts.writePluginFile MODULE
+      configFile = require(path.resolve 'testApp/config/plugins')
+      configFile.plugins[0].should.eql MODULE
+      done()
+
+  describe 'Lift', ->
+    it 'sailor project', (done) ->
+      scripts.lift options_lift, done
+
+  describe 'Clean', ->
+    it 'project files', (done) ->
+      scripts.clean "#{DIR}/#{APP}"
+      scripts.clean "#{DIR}/#{MODULE}"
+      fs.existsSync("#{DIR}/#{APP}").should.eql false
+      fs.existsSync("#{DIR}/#{MODULE}").should.eql false
+      done()

@@ -84,7 +84,6 @@ class AppHelper
       {options      : Args.OBJECT   | Args.Optional, _default: OPTIONS            }
       {cb           : Args.FUNCTION | Args.Optional, _default: undefined          }
     ], arguments)
-
     @_newTemplate(args.dir, args.options, TEMPLATE.BASE, args.cb)
 
 
@@ -93,9 +92,9 @@ class AppHelper
    * Generate a new module for a project
    * @param  {String} dir     Optional path
    * @param  {Object} options Optional options, like:
-   *   - name
-   *   - organization
-   *   - repository
+   *   - name of the folder
+   *   - name of the organization (for the git account)
+   *   - name of the repository
    * @param  {Function} cb    Optional Callback
   ###
   @newModule: (dir, options, cb) =>
@@ -104,7 +103,6 @@ class AppHelper
       {options      : Args.OBJECT   | Args.Optional, _default: OPTIONS            }
       {cb           : Args.FUNCTION | Args.Optional, _default: undefined          }
     ], arguments)
-
     @_newTemplate(args.dir, args.options, TEMPLATE.MODULE, args.cb)
 
 
