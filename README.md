@@ -1,3 +1,5 @@
+![](http://i.imgur.com/FaSMdJw.png)
+
 # Sailor Scripts
 
 [![Build Status](http://img.shields.io/travis/sailorjs/sailor-scripts/master.svg?style=flat)](https://travis-ci.org/sailorjs/sailor-scripts)
