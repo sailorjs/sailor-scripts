@@ -1,6 +1,6 @@
 {
   "name": "<%= name %>",
-  "description": "A new module for Sailor",
+  "description": "<%= description %>",
   "version": "0.0.0",
   "author": {
     "name": "Kiko Beats",

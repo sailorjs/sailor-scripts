@@ -1,6 +1,6 @@
 {
   "name": "<%= name %>",
-  "description": "A new Sailor Proyect",
+  "description": "<%= description %>",
   "version": "0.0.0",
   "dependencies": {
     "sailorjs": "git://github.com/sailorjs/sailorjs",

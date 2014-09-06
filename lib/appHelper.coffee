@@ -24,12 +24,13 @@ OPTIONS =
   name         : 'testApp'
   repository   : 'testApp'
   organization : 'sailorjs'
+  description  : 'A new Sailor Proyect'
 
 TEMPLATE =
   BASE  : path.join(__dirname, '../template/base')
   MODULE: path.join(__dirname, '../template/module')
-  FILES : ["README.md", "package.json"]
-  REGEX : /(README\.md)|(package\.json)/g
+  FILES : ["README.md", "LICENSE.md", "package.json"]
+  REGEX : /(README\.md)|(LICENSE\.md)|(package\.json)/g
 
 NO_MESSAGE = ">/dev/null 2>/dev/null"
 

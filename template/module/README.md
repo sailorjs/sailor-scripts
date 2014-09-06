@@ -5,7 +5,7 @@
 [![Dev Dependencies Status](http://img.shields.io/david/dev/<%= organization %>/<%= repository %>.svg?style=flat)](https://david-dm.org/<%= organization %>/<%= repository %>#info=devDependencies)
 [![NPM Status](http://img.shields.io/npm/dm/<%= repository %>.svg?style=flat)](https://www.npmjs.org/package/<%= repository %>)
 
-> A new module for Sailor
+> <%= description %>
 
 ## Install
 
