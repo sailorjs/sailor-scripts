@@ -39,6 +39,7 @@ Generate a new Sailor Base Proyect.
 	* `name`: name of the folder project
 	* `organization`: name of the organization (for git repository)
 	* `repository`: name of the git reposository
+	* `description`: description for your project
 
 By default the `name` and the `repository` is the same (`testApp`) and the organization is `sailorjs`
 
@@ -52,6 +53,7 @@ Generate a new Module for Sailor Base Proyect.
 	* `name`: name of the folder project
 	* `organization`: name of the organization (for git repository)
 	* `repository`: name of the git reposository
+	* `description`: description for your project
 
 By default the `name` and the `repository` is the same (`testApp`) and the organization is `sailorjs`
 
