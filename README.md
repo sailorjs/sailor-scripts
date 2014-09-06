@@ -1,6 +1,6 @@
-![](http://i.imgur.com/FaSMdJw.png)
+<center>![](http://i.imgur.com/ekGsPNz.png)</center>
 
-# Sailor Scripts
+# Scripts for Sailor
 
 [![Build Status](http://img.shields.io/travis/sailorjs/sailor-scripts/master.svg?style=flat)](https://travis-ci.org/sailorjs/sailor-scripts)
 [![Dependency status](http://img.shields.io/david/sailorjs/sailor-scripts.svg?style=flat)](https://david-dm.org/sailorjs/sailor-scripts)
@@ -8,7 +8,7 @@
 [![NPM Status](http://img.shields.io/npm/dm/sailor-scripts.svg?style=flat)](https://www.npmjs.org/package/sailor-scripts)
 [![Gittip](http://img.shields.io/gittip/Kikobeats.svg?style=flat)](https://www.gittip.com/Kikobeats/)
 
-> Scripts for Running Sailor
+> All scripts necessary for setup Sailor projects
 
 ## Install
 
@@ -18,7 +18,7 @@ npm install sailor-scripts
 
 ## Usage
 
-```
+```coffeescript
 scripts = require 'sailor-scripts'
 ```
 
