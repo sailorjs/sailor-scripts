@@ -15,11 +15,13 @@ options_app =
   name         : 'testApp'
   repository   : 'testApp'
   organization : 'sailorjs'
+  description  : 'A new Sailor Proyect'
 
 options_module =
   name         : 'sailor-module-test'
   repository   : 'sailor-module-test'
   organization : 'sailorjs'
+  description  : 'A new Sailor Proyect'
 
 options_lift =
   log: level: 'silent'
