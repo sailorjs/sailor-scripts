@@ -22,11 +22,8 @@
     "mocha": "*",
     "should": "*"
   },
-  "engines": {},
-  "homepage": "",
   "keywords": [
-    "sailor",
-    "sails"
+    "sailor"
   ],
   "license": "MIT",
   "repository": "sailorjs/sailor-scripts",
