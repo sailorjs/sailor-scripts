@@ -29,7 +29,6 @@
     "sails"
   ],
   "license": "MIT",
-  "main": "",
   "repository": "sailorjs/sailor-scripts",
   "scripts": {
     "test": "sh test/test.sh"
