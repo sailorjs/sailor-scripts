@@ -43,14 +43,14 @@ class AppHelper
    * @param  {String} command Command to execute
    * @param  {Function} orig Optional Callback
   ###
-  @run: (command, done) ->
+  @run: (command, cb) ->
     args = Args([
-      {cmd : Args.STRING   | Args.Required                     }
-      {done: Args.FUNCTION | Args.Optional, _default: undefined}
+      {cmd : Args.STRING   | Args.Required                   }
+      {cb: Args.FUNCTION | Args.Optional, _default: undefined}
     ], arguments)
 
     sh.run("#{args.cmd} #{NO_MESSAGE}")
-    args.done?()
+    args.cb?()
 
 
 
@@ -59,14 +59,14 @@ class AppHelper
    * @param  {String} command Command to execute
    * @param  {Function} orig Optional Callback
   ###
-  @exec: (command, done) ->
+  @exec: (command, cb) ->
     args = Args([
       {cmd : Args.STRING   | Args.Required                     }
-      {done: Args.FUNCTION | Args.Optional, _default: undefined}
+      {cb  : Args.FUNCTION | Args.Optional, _default: undefined}
     ], arguments)
 
     result = sh.exec(args.cmd)
-    if args.done? then args.done(result) else result
+    if args.cb? then args.cb(result) else result
 
 
 
@@ -112,53 +112,52 @@ class AppHelper
    * Create a symbolic link
    * @param  {String}   orig Origin path
    * @param  {String}   dist Destination path
-   * @param  {Function} done Optional Callback
+   * @param  {Function} cb   Optional Callback
   ###
-  @link: (orig, dist, done) =>
+  @link: (orig, dist, cb) =>
     args = Args([
       {orig: Args.STRING   | Args.Required                     }
       {dist: Args.STRING   | Args.Required                     }
-      {done: Args.FUNCTION | Args.Optional, _default: undefined}
+      {cb  : Args.FUNCTION | Args.Optional, _default: undefined}
     ], arguments)
 
     fs.symlinkSync args.orig, args.dist
-    args.done?()
+    args.cb?()
 
 
 
   ###
    * Write in the plugin file in config/plugins
    * @param  {String}   source Rext to write
-   * @param  {Function} done   Optional callback
+   * @param  {Function} cb   Optional callback
   ###
-  @writePluginFile: (source, baseName, done) ->
+  @writePluginFile: (source, baseName, cb) ->
     args = Args([
       {src     :  Args.STRING  | Args.Required                        }
       {baseName: Args.STRING   | Args.Optional, _default: OPTIONS.name}
-      {done    : Args.FUNCTION | Args.Optional, _default: undefined   }
+      {cb      : Args.FUNCTION | Args.Optional, _default: undefined   }
     ], arguments)
 
     configFile = path.join(process.cwd(), "/#{args.baseName}/config/plugins.coffee")
 
     if fs.existsSync configFile
       fs.writeFileSync configFile, "module.exports.plugins = [" + JSON.stringify(args.src) + "]"
-    args.done?()
-
+    args.cb?()
 
 
   ###
    * Clear a folder
    * @param  {[type]}   dir  Optional directory
-   * @param  {Function} done Optional Callback
+   * @param  {Function} cb Optional Callback
   ###
-  @clean: (dir, done) ->
+  @clean: (dir, cb) ->
     args = Args([
       {dir : Args.STRING   | Args.Optional, _default: "#{process.cwd()}/#{OPTIONS.NAME}"}
-      {done: Args.FUNCTION | Args.Optional, _default: undefined                         }
+      {cb  : Args.FUNCTION | Args.Optional, _default: undefined                         }
     ], arguments)
 
     wrench.rmdirSyncRecursive args.dir  if fs.existsSync(args.dir)
-    args.done?()
+    args.cb?()
 
 
 
@@ -166,23 +165,44 @@ class AppHelper
    * Run Sails 'lift' command
    * @param  {String}   dir     Optional directory
    * @param  {Object}   options Optional sails config object
-   * @param  {Function} done    Optional Callback
+   * @param  {Function} cb    Optional Callback
   ###
-  @lift: (dir, options, done) =>
+  @lift: (dir, options, cb) =>
     delete process.env.NODE_ENV
     args = Args([
       {dir    : Args.STRING   | Args.Optional, _default: process.cwd()}
       {options: Args.OBJECT   | Args.Optional, _default: {}           }
-      {done   : Args.FUNCTION | Args.Optional, _default: undefined    }
+      {cb     : Args.FUNCTION | Args.Optional, _default: undefined    }
     ], arguments)
 
     @_changePath args.dir
 
     Sails().lift args.options, (err, sails) ->
-      if args.done?
-        return args.done(err)  if err
+      if args.cb?
+        return args.cb(err)  if err
         sails.kill = sails.lower
-        args.done null, sails
+        args.cb null, sails
+
+
+
+  ###
+   * Link a dependency of the core in the folder of the project
+   * @param  {String}   orig        Optional orig path
+   * @param  {Function} moduleName  Module Name
+   * @param  {Function} cb          Optional callback
+  ###
+  @linkDependency: (orig, moduleName, cb) =>
+    args = Args([
+      {orig      : Args.STRING   | Args.Optional, _default: process.cwd()}
+      {moduleName: Args.STRING   | Args.Required                         }
+      {cb        : Args.FUNCTION | Args.Optional, _default: undefined    }
+    ], arguments)
+
+    srcModulePath = @_searchDependency(args.moduleName)
+    destModulePath = path.resolve(args.orig, 'node_modules', args.moduleName)
+
+    fs.symlinkSync srcModulePath, destModulePath, "junction" unless fs.existsSync(destModulePath)
+    args.cb?()
 
   # -- PRIVATE ------------------------------------------------------------------
 
@@ -235,7 +255,7 @@ class AppHelper
   For each dependency localize the source module path and create
   a symlink in the folder of the project
   ###
-  @_copyDependencies = (pkg, cb) =>
+  @_linkDependencyFromPackage = (pkg, cb) =>
     # get the names of the dependencies
     moduleNames     = _.union(Object.keys(pkg.devDependencies), Object.keys(pkg.dependencies))
     appDependencies = path.resolve SCOPE.APP, 'node_modules'
@@ -297,7 +317,7 @@ class AppHelper
     SCOPE.SAILS  = @_resolvePath 'sails'
     SCOPE.SAILOR = @_resolvePath 'sailor'
 
-    @_copyDependencies(appJSON, cb)
+    @_linkDependencyFromPackage(appJSON, cb)
 
 
 # -- EXPORTS ------------------------------------------------------------------

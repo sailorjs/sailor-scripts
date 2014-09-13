@@ -17,6 +17,7 @@ module.exports = {
   link            : appHelper.link,
   clean           : appHelper.clean,
   lift            : appHelper.lift,
+  linkDependency  : appHelper.linkDependency,
   writePluginFile : appHelper.writePluginFile
   // build        : appHelper.build,
   // buildAndLift : appHelper.buildAndLift
