@@ -121,7 +121,8 @@ class AppHelper
       {done: Args.FUNCTION | Args.Optional, _default: undefined}
     ], arguments)
 
-    fs.symlink args.orig, args.dist, -> args.done?()
+    fs.symlinkSync args.orig, args.dist
+    args.done?()
 
 
 
@@ -141,7 +142,6 @@ class AppHelper
 
     if fs.existsSync configFile
       fs.writeFileSync configFile, "module.exports.plugins = [" + JSON.stringify(args.src) + "]"
-
     args.done?()
 
 
