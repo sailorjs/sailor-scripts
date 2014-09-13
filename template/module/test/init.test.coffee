@@ -11,7 +11,7 @@ opts =
   plugins: [pkg.name]
 
 SCOPE =
-  MODULE: process.cwd()
+  MODULE       : process.cwd()
   TEST         : "#{process.cwd()}/testApp"
   LINK         : "#{process.cwd()}/testApp/node_modules/#{pkg.name}"
   DEPENDENCIES : ['sailor-translate', 'sailor-validator', 'sailor-errorify']
