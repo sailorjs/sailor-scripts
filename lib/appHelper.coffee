@@ -114,7 +114,7 @@ class AppHelper
    * @param  {String}   dist Destination path
    * @param  {Function} cb   Optional Callback
   ###
-  @link: (orig, dist, cb) =>
+  @link: (orig, dist, cb) ->
     args = Args([
       {orig: Args.STRING   | Args.Required                     }
       {dist: Args.STRING   | Args.Required                     }
