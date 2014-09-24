@@ -7,21 +7,17 @@
     "email": "josefrancisco.verdu@gmail.com",
     "url": "https://github.com/Kikobeats"
   },
-  "dependencies": {
-    "coffee-script": "*",
-    "sailor-errorify": "git://github.com/sailorjs/sailor-errorify",
-    "sailor-translate": "git://github.com/sailorjs/sailor-translate",
-    "sailor-validator": "git://github.com/sailorjs/sailor-validator"
-    },
+  "dependencies": {},
   "devDependencies": {
+    "coffee-script": "*",
     "grunt": "*",
     "grunt-contrib-watch": "*",
+    "grunt-translate-compile": "git://github.com/sailorjs/translate-compile",
     "load-grunt-tasks": "*",
     "mocha": "*",
-    "should": "*",
-    "superagent": "*",
     "sailor-scripts": "git://github.com/sailorjs/sailor-scripts",
-    "grunt-translate-compile": "git://github.com/sailorjs/translate-compile"
+    "should": "*",
+    "superagent": "*"
   },
   "engines": {},
   "homepage": "",
@@ -31,9 +27,9 @@
   ],
   "license": "MIT",
   "main": "",
-  "repository" : {
-    "type" : "git",
-    "url"  : "http://github.com/<%= organization %>/<%= name %>.git"
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/<%= organization %>/<%= name %>.git"
   },
   "scripts": {
     "test": "sh test/test.sh"

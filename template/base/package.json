@@ -19,9 +19,11 @@
     "grunt-sync": "*",
     "grunt-translate-compile": "git://github.com/sailorjs/translate-compile",
     "include-all": "*",
-    "jsonwebtoken": "*",
     "rc": "*",
-    "sails-disk": "*"
+    "sails-disk": "*",
+    "sailor-module-i18n" : "git://github.com/sailorjs/sailor-module-i18n",
+    "sailor-module-validator" : "git://github.com/sailorjs/sailor-module-validator",
+    "sailor-module-response" : "git://github.com/sailorjs/sailor-module-response"
   },
   "devDependencies": {
     "mocha": "*",
