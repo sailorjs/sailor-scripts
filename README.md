@@ -64,9 +64,9 @@ By default the `name` and the `repository` is the same (`testApp`) and the organ
 
 Create a symbolic link. User for linked a module with your base.
 
-#### .writePluginFile(\<origin>, [baseName], [callback])
+#### .writeModuleFile(\<origin>, [baseName], [callback])
 
-Use for write in the `config/plugins` the name of your module. Necessary for load the plugin in the Sails core.
+Use for write in the `config/modules` the name of your module. Necessary for load the module in the Sails core.
 
 #### .clean(\<directory>, [callback])
 

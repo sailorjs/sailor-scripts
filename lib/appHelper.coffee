@@ -127,23 +127,23 @@ class AppHelper
 
 
   ###
-   * Write in the plugin file in config/plugins
+   * Write in the module file in config/modules
    * @param  {String}   source Rext to write
    * @param  {Function} cb   Optional callback
   ###
-  @writePluginFile: (pluginName, baseName, cb) ->
+  @writeModuleFile: (moduleName, baseName, cb) ->
     args = Args([
-      {pluginName :  Args.STRING  | Args.Required                        }
+      {moduleName :  Args.STRING  | Args.Required                        }
       {baseName   : Args.STRING   | Args.Optional, _default: OPTIONS.name}
       {cb         : Args.FUNCTION | Args.Optional, _default: undefined   }
     ], arguments)
 
-    configFile = path.join(process.cwd(), "/#{args.baseName}/config/plugins.coffee")
+    configFile = path.join(process.cwd(), "/#{args.baseName}/config/modules.coffee")
 
     if fs.existsSync configFile
-      pluginList = (require configFile).plugins
-      pluginList.push args.pluginName
-      fs.writeFileSync configFile, "module.exports.plugins = #{JSON.stringify(pluginList)}"
+      moduleList = (require configFile).modules
+      moduleList.push args.moduleName
+      fs.writeFileSync configFile, "module.exports.modules = #{JSON.stringify(moduleList)}"
     args.cb?()
 
 

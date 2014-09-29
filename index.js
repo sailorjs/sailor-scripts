@@ -1,7 +1,7 @@
 /**
  * Dependencies
  */
-var CoffeeScript= require("coffee-script");
+var CoffeeScript = require("coffee-script");
 
 // Register CoffeeScript if exits
 if(CoffeeScript.register) CoffeeScript.register();
@@ -18,7 +18,5 @@ module.exports = {
   clean           : appHelper.clean,
   lift            : appHelper.lift,
   linkDependency  : appHelper.linkDependency,
-  writePluginFile : appHelper.writePluginFile
-  // build        : appHelper.build,
-  // buildAndLift : appHelper.buildAndLift
+  writeModuleFile : appHelper.writeModuleFile
 };

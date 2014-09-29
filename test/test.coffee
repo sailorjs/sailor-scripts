@@ -26,9 +26,6 @@ options_module =
 options_lift =
   log: level: 'silent'
 
-# afterEach (done) ->
-#   scripts.clean "#{DIR}/#{APP}", done
-
 ## -- Test -------------------------------------------------------------
 
 describe 'Sailor Scripts ::', ->
@@ -61,11 +58,11 @@ describe 'Sailor Scripts ::', ->
         fs.existsSync("#{DIR}/#{APP}/node_modules/#{MODULE}").should.eql true
         done()
 
-  describe 'writePluginFile', ->
+  describe 'writeModuleFile', ->
     it 'the name of the plugin in the config file', (done) ->
-      scripts.writePluginFile MODULE
-      configFile = require(path.resolve 'testApp/config/plugins')
-      configFile.plugins[0].should.eql MODULE
+      scripts.writeModuleFile MODULE
+      configFile = (require(path.resolve 'testApp/config/modules')).modules
+      configFile[configFile.length-1].should.eql MODULE
       done()
 
   describe 'Lift', ->
