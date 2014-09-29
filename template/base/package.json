@@ -21,6 +21,7 @@
     "include-all": "*",
     "rc": "*",
     "sails-disk": "*",
+    "sailor-module-blueprints" : "git://github.com/sailorjs/sailor-module-blueprints",
     "sailor-module-i18n" : "git://github.com/sailorjs/sailor-module-i18n",
     "sailor-module-validator" : "git://github.com/sailorjs/sailor-module-validator",
     "sailor-module-response" : "git://github.com/sailorjs/sailor-module-response"
