@@ -265,7 +265,7 @@ class AppHelper
 
     # ensure that SCOPE.SAILOR exists
     unless SCOPE.SAILOR?
-      console.log "#{chalk.blue('info')}   : Dependency 'sailorjs' doesn't found. Installing..."
+      console.log "#{chalk.blue('debug :')} Dependency 'sailorjs' doesn't found. Installing..."
       @run "cd #{appDependencies} && npm install sailorjs"
       SCOPE.SAILOR = path.resolve appDependencies, 'sailorjs'
 
@@ -276,7 +276,7 @@ class AppHelper
         fs.symlinkSync srcModulePath, destModulePath, "junction"
 
       catch e
-        console.log "#{chalk.blue('info')}   : Dependency '#{moduleName}' doesn't found. Installing..."
+        console.log "#{chalk.blue('debug :')} Dependency '#{moduleName}' doesn't found. Installing..."
         @run "cd #{appDependencies} && npm install #{moduleName}"
 
     # Finally link sailor if is necessary
