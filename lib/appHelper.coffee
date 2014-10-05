@@ -81,11 +81,12 @@ class AppHelper
   ###
   @newBase: (dir, options, cb) =>
     args = Args([
-      {dir    : Args.STRING   | Args.Optional, _default: "#{process.cwd()}"}
-      {options: Args.OBJECT   | Args.Optional, _default: OPTIONS           }
-      {cb     : Args.FUNCTION | Args.Optional, _default: undefined         }
+      {dir  : Args.STRING   | Args.Optional, _default: "#{process.cwd()}"}
+      {opts : Args.OBJECT   | Args.Optional, _default: OPTIONS           }
+      {cb   : Args.FUNCTION | Args.Optional, _default: undefined         }
     ], arguments)
-    @_newTemplate(args.dir, args.options, TEMPLATE.BASE, args.cb)
+
+    @_newTemplate(args.dir, args.opts, TEMPLATE.BASE, args.cb)
 
 
 
@@ -100,11 +101,12 @@ class AppHelper
   ###
   @newModule: (dir, options, cb) =>
     args = Args([
-      {dir    : Args.STRING   | Args.Optional, _default: "#{process.cwd()}"}
-      {options: Args.OBJECT   | Args.Optional, _default: OPTIONS           }
-      {cb     : Args.FUNCTION | Args.Optional, _default: undefined         }
+      {dir  : Args.STRING   | Args.Optional, _default: "#{process.cwd()}"}
+      {opts : Args.OBJECT   | Args.Optional, _default: OPTIONS           }
+      {cb   : Args.FUNCTION | Args.Optional, _default: undefined         }
     ], arguments)
-    @_newTemplate(args.dir, args.options, TEMPLATE.MODULE, args.cb)
+
+    @_newTemplate(args.dir, args.opts, TEMPLATE.MODULE, args.cb)
 
 
 
@@ -116,9 +118,9 @@ class AppHelper
   ###
   @link: (orig, dist, cb) ->
     args = Args([
-      {orig: Args.STRING   | Args.Required                     }
-      {dist: Args.STRING   | Args.Required                     }
-      {cb  : Args.FUNCTION | Args.Optional, _default: undefined}
+      {orig: Args.STRING   | Args.Optional,  _default: "#{process.cwd()}"}
+      {dist: Args.STRING   | Args.Required                              }
+      {cb  : Args.FUNCTION | Args.Optional, _default: undefined         }
     ], arguments)
 
     fs.symlinkSync args.orig, args.dist
@@ -144,7 +146,9 @@ class AppHelper
       moduleList = (require configFile).modules
       moduleList.push args.moduleName
       fs.writeFileSync configFile, "module.exports.modules = #{JSON.stringify(moduleList)}"
+
     args.cb?()
+
 
 
   ###
@@ -159,6 +163,7 @@ class AppHelper
     ], arguments)
 
     wrench.rmdirSyncRecursive args.dir  if fs.existsSync(args.dir)
+
     args.cb?()
 
 
@@ -217,6 +222,7 @@ class AppHelper
     ], arguments)
 
     process.chdir args.dir
+
 
 
   ###
@@ -302,14 +308,17 @@ class AppHelper
     # copy the content of the variable into file
     fs.outputFileSync(destPath, contents)
 
+
+
   ###
   Generate the scaffold base on a template
   ###
   @_newTemplate: (dir, options, templatePath, cb) =>
-    SCOPE.APP    = "#{dir}/#{options.name}"
+
+    SCOPE.APP = "#{dir}/#{options.name}"
     wrench.copyDirSyncRecursive templatePath, SCOPE.APP,
-      forceDelete: true
-      exclude    : TEMPLATE.REGEX
+      forceDelete : true
+      exclude     : TEMPLATE.REGEX
 
     @_copyTemplate "#{templatePath}/#{template}", options for template in TEMPLATE.FILES
 
