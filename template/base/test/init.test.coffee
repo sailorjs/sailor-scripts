@@ -1,18 +1,19 @@
 ## -- Dependencies -----------------------------------------------------------------------
 
-pkg       = require '../package.json'
-fs        = require 'fs'
-sailor    = require 'sailorjs'
-scripts   = sailor.scripts
+pkg          = require '../package.json'
+sailor       = require 'sailorjs'
+scripts      = sailor.scripts
 
 ## -- Setup ------------------------------------------------------------------------------
 
-opts =
+SCOPE =
+  PATH : process.cwd()
+  NAME : 'testApp'
+  TMP  : '.tmp'
+
+sailsOptions =
   log: level: "silent"
 
-SCOPE =
-  TEST: process.cwd()
-
 before (done) ->
-  scripts.clean "#{SCOPE.TEST}/.tmp/"
-  scripts.lift opts, done
+  scripts.clean "#{SCOPE.PATH}/#{SCOPE.NAME}/#{SCOPE.TMP}"
+  scripts.lift "#{SCOPE.PATH}/#{SCOPE.NAME}", sailsOptions, done

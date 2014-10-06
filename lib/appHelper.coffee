@@ -12,6 +12,7 @@ sailsBin         = path.join localDependecies, 'sails/bin/sails.js'
 Sails            = require (path.join localDependecies, 'sails/lib/app')
 sailsLift        = require (path.join localDependecies, 'sails/bin/sails-lift')
 _ioClient        = require('./sails.io')(require('socket.io-client'))
+forceRequire     = require 'force-require'
 
 # -- GLOBALS ------------------------------------------------------------------
 
@@ -45,8 +46,8 @@ class AppHelper
   ###
   @run: (command, cb) ->
     args = Args([
-      {cmd : Args.STRING   | Args.Required                   }
-      {cb: Args.FUNCTION | Args.Optional, _default: undefined}
+      {cmd : Args.STRING   | Args.Required                     }
+      {cb  : Args.FUNCTION | Args.Optional, _default: undefined}
     ], arguments)
 
     sh.run("#{args.cmd} #{NO_MESSAGE}")
@@ -110,44 +111,18 @@ class AppHelper
 
 
 
+  ###*
+   * Check if exist a folder or file
   ###
-   * Create a symbolic link
-   * @param  {String}   orig Origin path
-   * @param  {String}   dist Destination path
-   * @param  {Function} cb   Optional Callback
-  ###
-  @link: (orig, dist, cb) ->
+  @exist:(orig, moduleName) ->
     args = Args([
-      {orig: Args.STRING   | Args.Optional,  _default: "#{process.cwd()}"}
-      {dist: Args.STRING   | Args.Required                              }
-      {cb  : Args.FUNCTION | Args.Optional, _default: undefined         }
+      {orig       : Args.STRING   | Args.Optional, _default: "#{process.cwd()}"}
+      {moduleName : Args.STRING   | Args.Required                              }
+      {cb         : Args.FUNCTION | Args.Optional, _default: undefined         }
     ], arguments)
 
-    fs.symlinkSync args.orig, args.dist
-    args.cb?()
-
-
-
-  ###
-   * Write in the module file in config/modules
-   * @param  {String}   source Rext to write
-   * @param  {Function} cb   Optional callback
-  ###
-  @writeModuleFile: (moduleName, baseName, cb) ->
-    args = Args([
-      {moduleName :  Args.STRING  | Args.Required                        }
-      {baseName   : Args.STRING   | Args.Optional, _default: OPTIONS.name}
-      {cb         : Args.FUNCTION | Args.Optional, _default: undefined   }
-    ], arguments)
-
-    configFile = path.join(process.cwd(), "/#{args.baseName}/config/modules.coffee")
-
-    if fs.existsSync configFile
-      moduleList = (require configFile).modules
-      moduleList.push args.moduleName
-      fs.writeFileSync configFile, "module.exports.modules = #{JSON.stringify(moduleList)}"
-
-    args.cb?()
+    filePath = path.resolve args.orig, args.moduleName
+    if args.cb? then fs.exists filePath, -> args.cb() else fs.existsSync filePath
 
 
 
@@ -193,7 +168,77 @@ class AppHelper
 
 
   ###
-   * Link a dependency of the core in the folder of the project
+   * Write in the module file in config/modules
+   * @param  {String}   source Rext to write
+   * @param  {Function} cb   Optional callback
+  ###
+  @writeModuleFile: (moduleName, baseName, cb) ->
+    args = Args([
+      {moduleName : Args.STRING   | Args.Required                        }
+      {baseName   : Args.STRING   | Args.Optional, _default: OPTIONS.name}
+      {cb         : Args.FUNCTION | Args.Optional, _default: undefined   }
+    ], arguments)
+
+    configFile = path.resolve args.baseName, 'config', 'modules.coffee'
+
+    if fs.existsSync configFile
+      moduleList = (require configFile).modules
+      moduleList.push args.moduleName
+      fs.writeFileSync configFile, "module.exports.modules = #{JSON.stringify(moduleList)}"
+
+    args.cb?()
+
+
+
+  ###
+   * Create a symbolic link
+   * @param  {String}   orig Origin path
+   * @param  {String}   dist Destination path
+   * @param  {Function} cb   Optional Callback
+  ###
+  @link: (orig, dist, cb) ->
+    args = Args([
+      {orig : Args.STRING   | Args.Optional, _default: "#{process.cwd()}"}
+      {dist : Args.STRING   | Args.Required                              }
+      {cb   : Args.FUNCTION | Args.Optional, _default: undefined         }
+    ], arguments)
+
+    fs.symlinkSync args.orig, args.dist
+    args.cb?()
+
+
+
+  ###*
+   * helper to concat link and writeModuleFile functions
+  ###
+  @linkModule: (moduleName, cb) ->
+    args = Args([
+      {moduleName : Args.STRING   | Args.Required                               }
+      {cb         : Args.FUNCTION | Args.Optional, _default: undefined          }
+    ], arguments)
+
+    linkFolder = path.resolve OPTIONS.name, 'node_modules', args.moduleName
+    @link linkFolder, => @writeModuleFile args.moduleName, -> args.cb?()
+
+
+
+  ###*
+   * similar to linkModule but for dependencies that need
+   * only for testing environment (for example, other module)
+  ###
+  @linkOther: (moduleName, cb) ->
+    args = Args([
+      {moduleName : Args.STRING   | Args.Required                               }
+      {cb         : Args.FUNCTION | Args.Optional, _default: undefined          }
+    ], arguments)
+
+    linkFolder = path.resolve OPTIONS.name
+    @linkDependency linkFolder, args.moduleName, => @writeModuleFile args.moduleName, -> args.cb?()
+
+
+  ###
+   * Link a dependency of the core in the folder of the project.
+   * If the dependency is no possible to localize, then install it.
    * @param  {String}   orig        Optional orig path
    * @param  {Function} moduleName  Module Name
    * @param  {Function} cb          Optional callback
@@ -208,7 +253,11 @@ class AppHelper
     srcModulePath = @_searchDependency(args.moduleName)
     destModulePath = path.resolve(args.orig, 'node_modules', args.moduleName)
 
-    fs.symlinkSync srcModulePath, destModulePath, "junction" unless fs.existsSync(destModulePath)
+    unless srcModulePath
+      forceRequire scope: args.orig, name: args.moduleName, production: true
+    else
+      fs.symlinkSync srcModulePath, destModulePath, "junction" unless fs.existsSync(destModulePath)
+
     args.cb?()
 
   # -- PRIVATE ------------------------------------------------------------------
@@ -248,16 +297,17 @@ class AppHelper
   Localize a dependency and return the path
   ###
   @_searchDependency = (moduleName) ->
-    sailsJSON  = require("#{SCOPE.SAILS}/package.json")
-    sailorJSON = require("#{SCOPE.SAILOR}/package.json")
+    try
+      sailsJSON  = require("#{SCOPE.SAILS}/package.json")
+      sailorJSON = require("#{SCOPE.SAILOR}/package.json")
 
-    if sailsJSON['dependencies'][moduleName] or sailsJSON['devDependencies'][moduleName]
-      path.join "#{SCOPE.SAILS}", 'node_modules', moduleName
-    else if sailorJSON['dependencies'][moduleName] or sailorJSON['devDependencies'][moduleName]
-      path.join "#{SCOPE.SAILOR}", 'node_modules', moduleName
-    else throw new Error "Dependency '#{moduleName}' not found"
-
-
+      if sailsJSON['dependencies'][moduleName] or sailsJSON['devDependencies'][moduleName]
+        path.join "#{SCOPE.SAILS}", 'node_modules', moduleName
+      else if sailorJSON['dependencies'][moduleName] or sailorJSON['devDependencies'][moduleName]
+        path.join "#{SCOPE.SAILOR}", 'node_modules', moduleName
+      else throw new Error "Dependency '#{moduleName}' not found"
+    catch e
+      undefined
 
   ###
   For each dependency localize the source module path and create

@@ -12,6 +12,7 @@
     "chalk": "*",
     "coffee-script": "*",
     "execSync": "*",
+    "force-require": "*",
     "fs-extra": "*",
     "lodash": "*",
     "sails": "git://github.com/sailorjs/sails",
