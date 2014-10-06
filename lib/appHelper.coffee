@@ -233,7 +233,10 @@ class AppHelper
     ], arguments)
 
     linkFolder = path.resolve OPTIONS.name
-    @linkDependency linkFolder, args.moduleName, => @writeModuleFile args.moduleName, -> args.cb?()
+
+    @writeModuleFile args.moduleName, =>
+      @linkDependency linkFolder, args.moduleName, ->
+        args.cb?()
 
 
   ###
