@@ -12,7 +12,9 @@ var appHelper = require('./lib/appHelper');
  * Exports
  */
 module.exports = {
-  exist            : appHelper.exist,
+  run             : appHelper.run,
+  exec            : appHelper.exec,
+  exist           : appHelper.exist,
   clean           : appHelper.clean,
   newBase         : appHelper.newBase,
   newModule       : appHelper.newModule,
