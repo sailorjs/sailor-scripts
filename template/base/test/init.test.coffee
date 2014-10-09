@@ -8,12 +8,11 @@ scripts      = sailor.scripts
 
 SCOPE =
   PATH : process.cwd()
-  NAME : 'testApp'
   TMP  : '.tmp'
 
 sailsOptions =
   log: level: "silent"
 
 before (done) ->
-  scripts.clean "#{SCOPE.PATH}/#{SCOPE.NAME}/#{SCOPE.TMP}"
-  scripts.lift "#{SCOPE.PATH}/#{SCOPE.NAME}", sailsOptions, done
+  scripts.clean "#{SCOPE.PATH}/#{SCOPE.TMP}"
+  scripts.lift "#{SCOPE.PATH}", sailsOptions, done
