@@ -1,14 +1,25 @@
+## -- Dependencies --------------------------------------------------------
+
 path = "http://localhost:1337"
 
-paths =
-  # CRUD
-  create:  path + "/user"
-  update:  path + "/user"
-  find:    path + "/user"
-  destroy: path + "/user"
-  # CUSTOM
-  session: path + "/user/session"
-  login:   path + "/user/login"
-  logout:  path + "/user/logout"
+query_generator = (collection, query) ->
+  if query? then "#{path}/#{collection}/#{query}" else "#{path}/#{collection}"
 
-module.exports = paths
+## -- Private -------------------------------------------------------------
+
+url =
+  user:
+    create  : (query=undefined) ->  query_generator('user', query)
+    update  : (query=undefined) ->  query_generator('user', query)
+    find    : (query=undefined) ->  query_generator('user', query)
+    destroy : (query=undefined) ->  query_generator('user', query)
+
+  message:
+    create  : (query=undefined) ->  query_generator('message', query)
+    update  : (query=undefined) ->  query_generator('message', query)
+    find    : (query=undefined) ->  query_generator('message', query)
+    destroy : (query=undefined) ->  query_generator('message', query)
+
+## -- Exports -------------------------------------------------------------
+
+module.exports = url
