@@ -31,13 +31,10 @@
     "should": "*",
     "superagent": "*"
   },
-  "engines": {},
-  "homepage": "",
   "keywords": [
     "sailor"
   ],
   "license": "MIT",
-  "main": "",
   "repository" : {
     "type" : "git",
     "url"  : "http://github.com/<%= organization %>/<%= name %>.git"
