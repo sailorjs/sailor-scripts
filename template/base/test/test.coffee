@@ -3,6 +3,7 @@
 should    = require 'should'
 request   = require 'superagent'
 url       = require './helpers/urlHelper'
+user      = require './helpers/userHelper'
 
 ## -- Test -----------------------------------------------------------------------------
 
