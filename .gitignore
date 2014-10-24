@@ -24,9 +24,9 @@ nbproject
 # Tests
 ############################
 testApp
+testApp2
 coverage
 sailor-module-test
-
 
 ############################
 # Other

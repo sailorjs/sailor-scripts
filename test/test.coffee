@@ -9,15 +9,18 @@ scripts   = require '../'
 
 DIR    = process.cwd()
 APP    = 'testApp'
+APP2   = 'testApp2'
 MODULE = 'sailor-module-test'
 
 options_app =
+  folder       : 'testApp2'
   name         : 'testApp'
   repository   : 'testApp'
   organization : 'sailorjs'
   description  : 'A new Sailor Proyect'
 
 options_module =
+  folder       : 'sailor-module-test'
   name         : 'sailor-module-test'
   repository   : 'sailor-module-test'
   organization : 'sailorjs'
@@ -30,19 +33,8 @@ options_lift =
 
 describe 'Sailor Scripts ::', ->
 
-  describe 'Base', ->
-    it 'create ', (done) ->
-      scripts.newBase ->
-        fs.existsSync("#{DIR}/#{APP}").should.eql true
-        done()
-
-    it 'created specifing the options', (done)->
-      scripts.newBase options_app , ->
-        fs.existsSync("#{DIR}/#{APP}").should.eql true
-        done()
-
   describe 'Module', ->
-    xit 'created', (done) ->
+    it 'created', (done) ->
       scripts.newModule  ->
         fs.existsSync("#{DIR}/#{APP}").should.eql true
         done()
@@ -52,7 +44,18 @@ describe 'Sailor Scripts ::', ->
         fs.existsSync("#{DIR}/#{MODULE}").should.eql true
         done()
 
-  describe 'Link', ->
+  describe 'Base', ->
+    it 'created ', (done) ->
+      scripts.newBase ->
+        fs.existsSync("#{DIR}/#{APP}").should.eql true
+        done()
+
+    it 'created specifing the options', (done)->
+      scripts.newBase options_app , ->
+        fs.existsSync("#{DIR}/#{APP2}").should.eql true
+        done()
+
+  xdescribe 'Link', ->
     it 'module in base project', (done) ->
       scripts.link "#{DIR}/#{MODULE}", "#{DIR}/#{APP}/node_modules/#{MODULE}", ->
         fs.existsSync("#{DIR}/#{APP}/node_modules/#{MODULE}").should.eql true
@@ -72,7 +75,10 @@ describe 'Sailor Scripts ::', ->
   describe 'Clean', ->
     it 'project files', (done) ->
       scripts.clean "#{DIR}/#{APP}"
+      scripts.clean "#{DIR}/#{APP2}"
       scripts.clean "#{DIR}/#{MODULE}"
+
       fs.existsSync("#{DIR}/#{APP}").should.eql false
+      fs.existsSync("#{DIR}/#{APP2}").should.eql false
       fs.existsSync("#{DIR}/#{MODULE}").should.eql false
       done()

@@ -38,7 +38,7 @@
   "license": "MIT",
   "repository" : {
     "type" : "git",
-    "url"  : "http://github.com/<%= organization %>/<%= name %>.git"
+    "url"  : "http://github.com/<%= organization %>/<%= repository %>.git"
   },
   "scripts": {
     "test": "sh test/test.sh"

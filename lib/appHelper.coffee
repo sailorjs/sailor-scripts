@@ -22,10 +22,12 @@ SCOPE =
   APP    : null
 
 OPTIONS =
+  folder       : 'testApp'
   name         : 'testApp'
   repository   : 'testApp'
   organization : 'sailorjs'
   description  : 'A new Sailor Proyect'
+  description_module : 'A new module for Sailor'
 
 TEMPLATE =
   BASE  : path.join(__dirname, '../template/base')
@@ -107,6 +109,7 @@ class AppHelper
       {cb   : Args.FUNCTION | Args.Optional, _default: undefined         }
     ], arguments)
 
+    args.opts.module = true
     @_newTemplate(args.dir, args.opts, TEMPLATE.MODULE, args.cb)
 
 
@@ -348,10 +351,23 @@ class AppHelper
 
 
 
+  @_sanetizeOptions: (options) ->
+    options.name         ?= OPTIONS.name
+    options.organization ?= OPTIONS.organization
+    unless options.description
+      if options.module
+        options.description = OPTIONS.description_module
+      else
+        options.description = OPTIONS.description
+    options
+
+
+
   ###
   Process a template file and copy it on the destinity
   ###
   @_copyTemplate: (srcPath, options) ->
+    options  = @_sanetizeOptions(options)
     destPath = path.resolve(SCOPE.APP, path.basename(srcPath))
     contents = fs.readFileSync srcPath, "utf8"
     contents = _.template(contents, options)
@@ -367,8 +383,7 @@ class AppHelper
   Generate the scaffold base on a template
   ###
   @_newTemplate: (dir, options, templatePath, cb) =>
-
-    SCOPE.APP = "#{dir}/#{options.name}"
+    SCOPE.APP = "#{dir}/#{options.folder}"
     wrench.copyDirSyncRecursive templatePath, SCOPE.APP,
       forceDelete : true
       exclude     : TEMPLATE.REGEX
