@@ -392,6 +392,7 @@ class AppHelper
 
     appJSON  = require("#{SCOPE.APP}/package.json")
     delete appJSON.dependencies?.sailorjs
+    delete appJSON.devDependencies?.sailorjs
 
     SCOPE.SAILS  = @_resolvePath 'sails'
     SCOPE.SAILOR = @_resolvePath 'sailor'
