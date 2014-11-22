@@ -79,10 +79,6 @@ Lift a project, like:
 * `directory`: path under start the server. by default is `procress.cwd()`
 * `options`: options to pass to sails core (like log level, node environment,...)
 
-
-
 ## License
 
-MIT © [Kiko Beats](http://kikobeats.com)
-
-
+MIT © sailorjs
