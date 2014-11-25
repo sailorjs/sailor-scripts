@@ -25,4 +25,4 @@ toffee, walrus, & whiskers                                                *
 For more options, check out the docs:                                     *
 https://github.com/balderdashy/sails-wiki/blob/0.9/config.views.md#engine *
 ###
-module.exports.views = engine: "ejs"
+module.exports.views = engine: "handlebars"
