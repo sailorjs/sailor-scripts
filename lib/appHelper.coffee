@@ -11,7 +11,7 @@ localDependecies = path.join __dirname, '../node_modules'
 sailsBin         = path.join localDependecies, 'sails/bin/sails.js'
 Sails            = require (path.join localDependecies, 'sails/lib/app')
 sailsLift        = require (path.join localDependecies, 'sails/bin/sails-lift')
-_ioClient        = require('./sails.io')(require('socket.io-client'))
+# _ioClient        = require('./sails.io')(require('socket.io-client'))
 forceRequire     = require 'force-require'
 
 # -- GLOBALS ------------------------------------------------------------------
